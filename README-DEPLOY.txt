@@ -85,3 +85,11 @@ CARDWISE V9 — RECOMMENDATION BILL GENERATION DAY
 - Uses the existing card.statement and card.due fields; no data migration required.
 - Existing localStorage key and backup/restore behaviour are unchanged.
 - Service worker cache version: cardwise-manager-v9.
+
+
+CARDWISE V10 — FIX SMART SUGGESTION BILLING DETAILS
+- Corrected the Home recommendation card renderer to display Bill generation day
+  from the saved Statement date field and Payment due day from the saved Due field.
+- Existing offers remain visible below the billing details.
+- No data migration; existing localStorage data and backup/restore remain unchanged.
+- Service worker cache version: cardwise-manager-v10.

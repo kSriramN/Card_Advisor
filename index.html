@@ -279,7 +279,7 @@ try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
 function persist(){data.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}${c.due?`<div class="meta">Payment due day: ${esc(c.due)}</div>`:""}</article>`;}
+function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">Bill generation day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;}
 function renderRecommendations(){
  const v=$("datePicker").value||iso(new Date()),p=v.split("-").map(Number),dt=new Date(p[0],p[1]-1,p[2],12),day=dt.getDate();
  $("todayText").textContent=dt.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
