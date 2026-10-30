@@ -96,3 +96,6 @@ CARDWISE V10 — FIX SMART SUGGESTION BILLING DETAILS
 
 
 Version 11 update: Card editor now has only Statement generation day and Payment due day. The legacy billing-cycle value is retained internally when editing existing cards for compatibility, but is no longer shown as a separate field. Smart Suggestions uses the Statement generation day. Backup remains optional: changes save locally, the reminder appears after 10 changes by default, and reminders can be disabled in Settings. No mandatory backup gate is used.
+
+
+CardWise v13 update: Home recommendations now show the number of days until each card's next statement generation date and sort cards from the longest time remaining to the shortest. Cards without a statement generation day are shown last. The calculation follows the next calendar occurrence of each saved statement day and handles month/year boundaries. Backup remains optional: local changes save automatically, with an optional reminder after 10 changes; there is no mandatory backup gate.

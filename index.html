@@ -116,6 +116,28 @@ details summary{font-size:13px;color:#334963}
 .backup-toast-actions{display:flex;gap:8px}.backup-toast-actions button{flex:1}
 @media(min-width:720px){.backup-toast{bottom:20px}}
 
+
+/* v15 compact, collapsible mobile-first interface */
+:root{--bg:#ffffff;--surface:#ffffff;--line:#e7edf2;--blue:#167d65;--bluebg:#edf7f3}
+body{background:#fff}
+.card-editor-panel{padding:0;overflow:hidden}
+.editor-summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;color:#167d65;background:linear-gradient(110deg,#f0faf6,#f6f9ff);cursor:pointer}
+.editor-summary::-webkit-details-marker{display:none}
+.editor-summary strong{display:block;font-size:14px}
+.editor-summary small{display:block;color:#718096;font-size:11px;font-weight:500;margin-top:3px}
+.summary-chevron{font-size:22px;transition:transform .18s;color:#167d65}
+#cardEditor[open] .summary-chevron{transform:rotate(180deg)}
+.editor-inner{padding:0 15px 15px;border-top:1px solid #edf1f4}
+#cardEditor[open] .editor-inner{padding-top:14px}
+#cardEditor summary:focus-visible,.nav-btn:focus-visible,button:focus-visible{outline:3px solid rgba(22,125,101,.25);outline-offset:2px}
+.grouphead{background:#edf7f3;color:#167d65}
+.nav-btn.active{background:#e8f5ef;color:#167d65}
+.nav-btn:nth-child(3).active{background:#edf3ff;color:#3568b8}
+.nav-btn:nth-child(4).active{background:#fff5e8;color:#a86b18}
+.nav-btn:nth-child(5).active{background:#f3efff;color:#7655b5}
+.soft-pill{background:#eaf6f0;color:#167d65}
+@media(max-width:430px){.editor-summary{padding:13px}.editor-inner{padding-left:12px;padding-right:12px}}
+
 </style></head><body><main>
 <header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand">CardWise</div><div class="tagline">Your cards, clearly organised.</div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
 <nav class="app-nav" aria-label="Main navigation">
@@ -133,7 +155,7 @@ details summary{font-size:13px;color:#334963}
 <div class="view" id="view-cards">
   <div class="view-heading"><div class="kicker">YOUR WALLET</div><h1>My cards</h1><p>Manage card details, limits and offers.</p></div>
   <section class="panel"><div class="itemtop"><h2 style="margin:0">Saved cards</h2><button id="addCard">+ Add card</button></div><div id="cardList"></div></section>
-  <section class="panel"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
+  <section class="panel card-editor-panel"><details id="cardEditor"><summary class="editor-summary"><span><strong id="editorSummaryTitle">＋ Add or edit a card</strong><small>Open only when you want to update card details</small></span><span class="summary-chevron">⌄</span></summary><div class="editor-inner"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
 <label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
 <label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
@@ -147,7 +169,8 @@ details summary{font-size:13px;color:#334963}
 <label>Recommend through day<input id="toDay" type="number" min="1" max="31" value="31"></label>
 <label>Optional second range – from<input id="fromDay2" type="number" min="1" max="31" placeholder="Optional"></label>
 <label>Optional second range – through<input id="toDay2" type="number" min="1" max="31" placeholder="Optional"></label>
-</div><div class="notice">Do not enter PINs, CVVs or full card numbers. CardWise does not store them.</div><div class="toolbar"><button type="submit" id="saveCard">Save card details</button><button type="button" class="secondary" id="cancelEdit">Clear form</button></div></form><div class="success" id="saveStatus"></div></section>
+<div class="full muted">Ranges can cross month-end. Example: from 26 through 9 covers 15 days, including the 26th and the 9th of the next month.</div>
+</div><div class="notice">Do not enter PINs, CVVs or full card numbers. CardWise does not store them.</div><div class="toolbar"><button type="submit" id="saveCard">Save card details</button><button type="button" class="secondary" id="cancelEdit">Clear form</button></div></form><div class="success" id="saveStatus"></div></div></details></section>
 
 </div>
 <div class="view" id="view-activity">
@@ -182,7 +205,7 @@ details summary{font-size:13px;color:#334963}
  <div class="itemtop"><h2 style="margin:0">Credit card bills</h2><span class="period">Payment tracker</span></div>
  <p class="muted">Enter the statement amount when your bank generates a bill. Mark it paid after you make the payment.</p>
  <div class="statgrid" id="billStats"></div>
- <details style="margin-top:12px" open>
+ <details style="margin-top:12px">
   <summary>Add a generated bill</summary>
   <form id="billForm" style="margin-top:12px">
    <div class="formgrid">
@@ -200,8 +223,8 @@ details summary{font-size:13px;color:#334963}
 </div>
 <div class="view" id="view-settings">
  <div class="view-heading"><div class="kicker">PREFERENCES & DATA</div><h1>Settings</h1><p>Your data stays on this device.</p></div>
- <section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div>
-<div class="reminder-setting"><label class="toggle-label"><input type="checkbox" id="backupReminderToggle" checked> Remind me to back up occasionally</label><p class="muted">CardWise saves changes automatically on this device. A reminder appears after 10 changes. You can always back up manually.</p></div>
+ <section class="panel"><details><summary>Backup & restore</summary><div style="padding-top:12px"><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div>
+<div class="reminder-setting"><label class="toggle-label"><input type="checkbox" id="backupReminderToggle" checked> Remind me to back up occasionally</label><p class="muted">CardWise saves changes automatically on this device. A reminder appears after 10 changes. You can always back up manually.</p></div></div></details>
 </section>
 <section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
 <div class="foot">Local storage only · No cloud sync · No PINs, CVVs or full card numbers stored.</div>
@@ -278,27 +301,59 @@ try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
 function persist(){data.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">Statement generation day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;}
+function dayInRange(day,from,to){from=Number(from||1);to=Number(to||31);return from<=to?(day>=from&&day<=to):(day>=from||day<=to);}
+function nextStatementDate(statementDay, referenceDate){
+ const n=Number(statementDay);
+ if(!Number.isInteger(n)||n<1||n>31)return null;
+ const base=new Date(referenceDate.getFullYear(),referenceDate.getMonth(),referenceDate.getDate(),12);
+ let year=base.getFullYear(),month=base.getMonth();
+ const makeDate=(y,m)=>new Date(y,m,Math.min(n,new Date(y,m+1,0).getDate()),12);
+ let target=makeDate(year,month);
+ if(target<base){month++;if(month>11){month=0;year++;}target=makeDate(year,month);}
+ return target;
+}
+function daysUntilStatement(c, referenceDate){
+ const target=nextStatementDate(c.statement,referenceDate);
+ return target?Math.round((target-referenceDate)/86400000):null;
+}
+function cardHTML(c, referenceDate){
+ const days=daysUntilStatement(c,referenceDate);
+ const target=days===null?null:nextStatementDate(c.statement,referenceDate);
+ const statementDate=target?target.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}):"Not set";
+ const countdown=days===null?"Statement generation day not set":`Next statement in ${days} day${days===1?"":"s"} (${statementDate})`;
+ const reason=days===null
+  ?"Add a statement generation day to calculate why this card is recommended."
+  :days>=15
+   ?`Recommended higher: ${days} days remain before statement generation, giving you more time before the next bill.`
+   :`Recommended lower: only ${days} day${days===1?"":"s"} remain before statement generation, so this card is closer to its next bill.`;
+ return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">${countdown} · Statement day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div><div class="meta">${reason}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;
+}
 function renderRecommendations(){
  const v=$("datePicker").value||iso(new Date()),p=v.split("-").map(Number),dt=new Date(p[0],p[1]-1,p[2],12),day=dt.getDate();
  $("todayText").textContent=dt.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
  $("periodText").textContent=day<=14?"Month start":day<=20?"Month middle":day<=25?"After the 21st":"Month end";
- const active=data.cards.filter(c=>c.active!==false&&((Number(c.from||1)<=day&&Number(c.to||31)>=day)||(c.from2&&c.to2&&Number(c.from2)<=day&&Number(c.to2)>=day)));
+ const active=data.cards.filter(c=>c.active!==false&&(dayInRange(day,c.from,c.to)||(c.from2&&c.to2&&dayInRange(day,c.from2,c.to2))));
  for(const [target,mode] of [["upiList","upi"],["nonupiList","nonupi"]]){
-  const found=active.filter(c=>c[mode]);$(target).innerHTML=found.length?found.map(cardHTML).join(""):'<div class="empty">No card assigned for this category on this date. Edit a card to set its recommendation days.</div>';
+  const found=active.filter(c=>c[mode]).map(c=>({card:c,days:daysUntilStatement(c,dt)})).sort((a,b)=>{
+   if(a.days===null&&b.days===null)return 0;
+   if(a.days===null)return 1;
+   if(b.days===null)return -1;
+   return b.days-a.days;
+  });
+  $(target).innerHTML=found.length?found.map(x=>cardHTML(x.card,dt)).join(""):'<div class="empty">No card assigned for this category on this date. Edit a card to set its recommendation days.</div>';
  }
 }
 function renderCards(){
- $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Statement generation: ${esc(c.statement||"—")} · Payment due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
+ $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Statement generation: ${esc(c.statement||"—")} · Payment due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${Number(c.from||1)>Number(c.to||31)?" (crosses month-end)":""}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}${Number(c.from2)>Number(c.to2)?" (crosses month-end)":""}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>del(b.dataset.delete));
 }
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$("backupInfo").textContent=data.updatedAt?"Last saved: "+new Date(data.updatedAt).toLocaleString():"Starter card list loaded. No edits saved yet.";}
-function clearForm(){$("cardForm").reset();$("editId").value="";$("fromDay").value=1;$("toDay").value=31;$("fromDay2").value="";$("toDay2").value="";$("formHeading").textContent="Add a card";$("saveCard").textContent="Save card details";}
+function clearForm(){$("cardForm").reset();$("editId").value="";$("fromDay").value=1;$("toDay").value=31;$("fromDay2").value="";$("toDay2").value="";$("formHeading").textContent="Add a card";$("saveCard").textContent="Save card details";$("editorSummaryTitle").textContent="＋ Add or edit a card";}
 function edit(id){
  const c=data.cards.find(x=>x.id===id);if(!c)return;
  for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,creditLimit:c.creditLimit||"",statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
- $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("cardForm").scrollIntoView({behavior:"smooth"});
+ $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("editorSummaryTitle").textContent="✎ Editing "+c.name;$("cardEditor").open=true;$("cardEditor").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function downloadBackup(){
  const obj={app:"CardWise",formatVersion:3,exportedAt:new Date().toISOString(),cards:data.cards,transactions:data.transactions||[],bills:data.bills||[]};
@@ -470,15 +525,15 @@ $("cardForm").onsubmit=e=>{
  e.preventDefault();
  const name=$("name").value.trim(),from=+$("fromDay").value,to=+$("toDay").value,from2=$("fromDay2").value?+$("fromDay2").value:"",to2=$("toDay2").value?+$("toDay2").value:"";
  if(!name){alert("Enter a card name.");return;}
- if(from<1||to>31||from>to||((from2||to2)&&(!from2||!to2||from2<1||to2>31||from2>to2))){alert("Enter valid recommendation day ranges from 1 to 31.");return;}
+ if(from<1||from>31||to<1||to>31||((from2||to2)&&(!from2||!to2||from2<1||from2>31||to2<1||to2>31))){alert("Enter valid recommendation days from 1 to 31. The through day may be earlier than the from day to cross month-end.");return;}
  const id=$("editId").value||"card-"+Date.now(),existingCard=data.cards.find(x=>x.id===id),c={...(existingCard||{}),id,name,bank:$("bank").value.trim(),network:$("network").value,creditLimit:Number($("creditLimit").value)||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=!!existingCard;
  if(!confirm((exists?"Confirm updates to ":"Add ")+name+"? This will save the information on this device."))return;
  if(exists)data.cards=data.cards.map(x=>x.id===id?c:x);else data.cards.push(c);
  try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}
- clearForm();refresh();lockForBackup("Your card details have been saved on this device. Download a backup now. CardWise will remain locked until you acknowledge that you have saved the file.");
+ clearForm();$("cardEditor").open=false;refresh();lockForBackup("Your card details have been saved on this device.");
 };
-$("addCard").onclick=()=>{clearForm();$("cardForm").scrollIntoView({behavior:"smooth"});};
-$("cancelEdit").onclick=clearForm;
+$("addCard").onclick=()=>{clearForm();$("cardEditor").open=true;$("cardEditor").scrollIntoView({behavior:"smooth",block:"start"});$("name").focus();};
+$("cancelEdit").onclick=()=>{clearForm();$("cardEditor").open=false;};
 $("datePicker").value=iso(new Date());$("datePicker").onchange=renderRecommendations;$("datePicker").oninput=renderRecommendations;
 $("exportBtn").onclick=()=>downloadBackup();
 $("backupTop").onclick=()=>downloadBackup();
