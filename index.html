@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f3f6fa"><title>CardWise</title>
+<meta name="theme-color" content="#ffffff"><title>CardWise — Your Credit Cards, Smarter</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 :root{--bg:#f3f6fa;--surface:#fff;--ink:#172538;--muted:#62748a;--line:#dce4ed;--blue:#1557a0;--bluebg:#eaf2fb;--green:#176b45;--red:#a43131}
@@ -137,6 +137,50 @@ body{background:#fff}
 .nav-btn:nth-child(5).active{background:#f3efff;color:#7655b5}
 .soft-pill{background:#eaf6f0;color:#167d65}
 @media(max-width:430px){.editor-summary{padding:13px}.editor-inner{padding-left:12px;padding-right:12px}}
+
+
+/* CardWise v16 — vibrant visual wallet */
+:root{--bg:#fff;--surface:#fff;--line:#e8edf3;--ink:#172b4d;--muted:#718096}
+body{background:#fff}
+.brand-icon{background:linear-gradient(145deg,#dff8ef,#dceeff);color:#087e70;box-shadow:inset 0 0 0 1px #d0eee4}
+.app-header .brand{background:linear-gradient(90deg,#163a68,#087f83);-webkit-background-clip:text;background-clip:text;color:transparent}
+.panel{box-shadow:0 7px 24px rgba(24,54,91,.055);border-color:#edf1f5}
+.welcome{padding-top:19px}
+.welcome h1{background:linear-gradient(90deg,#173d70,#087f78);-webkit-background-clip:text;background-clip:text;color:transparent}
+.group{border:0;background:transparent;overflow:visible}
+.grouphead{border-radius:10px;background:#eef8f4;color:#137b61;margin-bottom:8px;padding:9px 12px}
+#nonupiList .cardrow{--accent:#426bd6;--tint:#edf2ff}
+#upiList .cardrow{--accent:#13866b;--tint:#eaf8f2}
+.cardrow{position:relative;display:grid;grid-template-columns:72px minmax(0,1fr);gap:4px 12px;align-items:center;margin:9px 0;padding:12px;border:1px solid #e9eef4!important;border-radius:16px;background:linear-gradient(115deg,#fff 0%,#fff 68%,var(--tint,#f0f6ff) 100%);box-shadow:0 5px 16px rgba(30,55,90,.055)}
+.cardrow .mini-card{grid-row:1 / span 4;width:72px;height:51px;border-radius:9px;padding:7px;color:#fff;background:linear-gradient(135deg,var(--accent,#167d65),#162f58);box-shadow:0 4px 10px rgba(20,40,70,.2);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}
+.mini-card:after{content:"";position:absolute;width:58px;height:58px;border:1px solid rgba(255,255,255,.25);border-radius:50%;right:-24px;top:-19px}
+.mini-card .chip{width:13px;height:10px;border-radius:3px;background:linear-gradient(135deg,#ffe8a3,#c6a65e);opacity:.95}
+.mini-card .mini-bank{font-size:8px;font-weight:900;letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cardrow .cardname{font-size:14px;align-self:end}
+.cardrow .meta{font-size:10px;line-height:1.45}
+.cardrow .count-pill{display:inline-flex;align-items:center;width:max-content;max-width:100%;border-radius:99px;padding:4px 9px;background:#e6f7ee;color:#13784e;font-size:10px;font-weight:850}
+.cardrow .count-pill.soon{background:#fff3dd;color:#98600b}
+.cardrow .count-pill.urgent{background:#ffebeb;color:#b13b43}
+.cardrow .why{grid-column:2;background:var(--tint,#f1f7f5);border-radius:9px;padding:7px 9px;color:#3e5c68;font-size:10px;line-height:1.4}
+.cardrow .offer{grid-column:2;font-size:11px;margin-top:2px}
+#cardList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+#cardList .item{margin:0;padding:0;border:0;box-shadow:none;background:transparent;overflow:hidden}
+.wallet-card{min-height:142px;border-radius:16px;padding:13px;color:#fff;position:relative;overflow:hidden;box-shadow:0 7px 16px rgba(24,44,80,.16);background:linear-gradient(135deg,#176f78,#183d68)}
+.wallet-card:before,.wallet-card:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.2);border-radius:50%;width:130px;height:130px;right:-42px;top:-54px}
+.wallet-card:after{width:95px;height:95px;right:-22px;top:-32px}
+.wallet-card .wallet-top{display:flex;justify-content:space-between;gap:6px;align-items:center;position:relative;z-index:1}
+.wallet-card .wallet-bank{font-size:10px;font-weight:850;letter-spacing:.6px;text-transform:uppercase}
+.wallet-card .wallet-chip{width:23px;height:17px;border-radius:4px;background:linear-gradient(135deg,#fff0b5,#c8a75c)}
+.wallet-card .wallet-name{font-size:16px;font-weight:850;margin-top:18px;position:relative;z-index:1}
+.wallet-card .wallet-network{font-size:9px;letter-spacing:1.1px;text-transform:uppercase;opacity:.85;margin-top:4px;position:relative;z-index:1}
+.wallet-card .wallet-limit{font-size:10px;margin-top:10px;opacity:.95;position:relative;z-index:1}
+.wallet-card .wallet-actions{display:flex;gap:6px;margin-top:8px}
+.wallet-card .wallet-actions button{flex:1;font-size:10px;padding:7px 5px;background:#f2f6fb;color:#29435e}
+.wallet-card .wallet-actions .danger{background:#fff0f0;color:#a43131}
+#cardList .item .muted,#cardList .item .offer,#cardList .item .meta{font-size:10px;line-height:1.45;margin:5px 2px}
+#cardList .item .wallet-actions{margin:8px 2px}
+#cardList .item .wallet-actions button{flex:1}
+@media(max-width:380px){#cardList{grid-template-columns:1fr}.wallet-card{min-height:132px}.cardrow{grid-template-columns:62px minmax(0,1fr);gap:4px 9px}.cardrow .mini-card{width:62px;height:47px}}
 
 </style></head><body><main>
 <header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand">CardWise</div><div class="tagline">Your cards, clearly organised.</div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
@@ -316,17 +360,36 @@ function daysUntilStatement(c, referenceDate){
  const target=nextStatementDate(c.statement,referenceDate);
  return target?Math.round((target-referenceDate)/86400000):null;
 }
+function brandLetters(c){
+ const source=(c.bank||c.name||"CW").replace(/[^A-Za-z0-9 ]/g," ").trim().split(/\s+/).filter(Boolean);
+ return (source.length>1?source.slice(0,2).map(x=>x[0]).join(""):source[0]?.slice(0,2)||"CW").toUpperCase();
+}
+function cardPalette(c){
+ const s=(c.bank||c.name||"CardWise").toLowerCase();
+ const palettes=[["#167d65","#dff5eb"],["#315fbd","#e7efff"],["#8056b5","#f1eaff"],["#c27a19","#fff1d8"],["#b4475a","#ffebef"],["#087f91","#e1f7fa"]];
+ let n=0;for(let i=0;i<s.length;i++)n=(n*31+s.charCodeAt(i))>>>0;
+ return palettes[n%palettes.length];
+}
 function cardHTML(c, referenceDate){
  const days=daysUntilStatement(c,referenceDate);
  const target=days===null?null:nextStatementDate(c.statement,referenceDate);
  const statementDate=target?target.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}):"Not set";
- const countdown=days===null?"Statement generation day not set":`Next statement in ${days} day${days===1?"":"s"} (${statementDate})`;
+ const countdown=days===null?"Statement day not set":`Next statement in ${days} day${days===1?"":"s"}`;
  const reason=days===null
-  ?"Add a statement generation day to calculate why this card is recommended."
+  ?"Add a statement generation day to calculate the countdown and recommendation."
   :days>=15
-   ?`Recommended higher: ${days} days remain before statement generation, giving you more time before the next bill.`
-   :`Recommended lower: only ${days} day${days===1?"":"s"} remain before statement generation, so this card is closer to its next bill.`;
- return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">${countdown} · Statement day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div><div class="meta">${reason}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;
+   ?`${days} days remain before statement generation. More time remains in this billing cycle, so this card is ranked higher.`
+   :`Only ${days} day${days===1?"":"s"} remain before statement generation. The next bill is closer, so this card is ranked lower.`;
+ const [accent,tint]=cardPalette(c);
+ const urgency=days===null?"":days<7?" urgent":days<15?" soon":"";
+ return `<article class="cardrow" style="--accent:${accent};--tint:${tint}">
+ <div class="mini-card"><span class="chip"></span><span class="mini-bank">${esc(c.bank||c.name||"CardWise")}</span></div>
+ <div class="cardname">${esc(c.name)}</div>
+ <div class="count-pill${urgency}">${esc(countdown)}</div>
+ <div class="meta">Statement: ${esc(statementDate)}${c.due?` · Due day: ${esc(c.due)}`:""}</div>
+ <div class="why">${esc(reason)}</div>
+ ${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}
+ </article>`;
 }
 function renderRecommendations(){
  const v=$("datePicker").value||iso(new Date()),p=v.split("-").map(Number),dt=new Date(p[0],p[1]-1,p[2],12),day=dt.getDate();
@@ -344,7 +407,21 @@ function renderRecommendations(){
  }
 }
 function renderCards(){
- $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Statement generation: ${esc(c.statement||"—")} · Payment due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${Number(c.from||1)>Number(c.to||31)?" (crosses month-end)":""}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}${Number(c.from2)>Number(c.to2)?" (crosses month-end)":""}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
+ $("cardList").innerHTML=data.cards.length?data.cards.map(c=>{
+  const [accent,tint]=cardPalette(c);
+  return `<article class="item">
+   <div class="wallet-card" style="background:linear-gradient(135deg,${accent},#172f55)">
+    <div class="wallet-top"><span class="wallet-bank">${esc(c.bank||"CardWise")}</span><span class="wallet-chip"></span></div>
+    <div class="wallet-name">${esc(c.name)}</div>
+    <div class="wallet-network">${esc(c.network||"Card")}</div>
+    <div class="wallet-limit">Credit limit · ${c.creditLimit?money(c.creditLimit):"Not set"}</div>
+   </div>
+   <div class="muted">Statement day: ${esc(c.statement||"—")} · Payment due: ${esc(c.due||"—")}</div>
+   <div class="offer">${esc(c.offers||"No offer details")}</div>
+   <div class="meta">Recommend days ${esc(c.from||1)}–${esc(c.to||31)}${Number(c.from||1)>Number(c.to||31)?" (crosses month-end)":""}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}${Number(c.from2)>Number(c.to2)?" (crosses month-end)":""}`:""}</div>
+   <div class="wallet-actions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div>
+  </article>`;
+ }).join(""):'<div class="empty">No cards added.</div>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>del(b.dataset.delete));
 }
