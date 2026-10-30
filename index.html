@@ -1,179 +1,201 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f3f6fa">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>CardWise</title>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f3f6fa"><title>CardWise</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
-:root{--bg:#f3f6fa;--white:#fff;--ink:#182538;--muted:#64748b;--line:#dce4ed;--blue:#1557a0;--bluebg:#eaf2fb;--green:#176b45}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.45;padding:env(safe-area-inset-top) 15px calc(24px + env(safe-area-inset-bottom))}
-main{max-width:640px;margin:0 auto}
-header{padding:22px 2px 14px}
-h1{font-size:27px;line-height:1.1;margin:0;font-weight:850;letter-spacing:-.7px}
-.tagline{color:var(--muted);font-size:13px;margin-top:5px}
-.date-card,.panel{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:15px;margin:10px 0 14px}
-.date-card{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.kicker{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800;color:var(--muted)}
-#todayDate{font-size:22px;font-weight:850;color:#14243a;margin-top:3px;min-height:29px}
-#periodName{font-size:12px;font-weight:750;color:var(--blue);margin-top:2px}
-.date-control{font-size:11px;color:var(--muted);font-weight:700}
-input[type=date]{display:block;margin-top:5px;padding:9px 10px;min-height:42px;border:1px solid #aebdce;border-radius:10px;background:#fff;color:#17263b;color-scheme:light;font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-h2{font-size:17px;margin:0 0 11px}
-h3{font-size:14px;margin:0;font-weight:800}
-.group{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin:10px 0;background:#fff}
-.group-head{background:var(--bluebg);padding:9px 12px;font-size:12px;font-weight:850;color:#21466f}
-.card{padding:12px;border-top:1px solid var(--line)}
-.card:first-of-type{border-top:0}
-.card-name{font-size:16px;font-weight:800}
-.offer{font-size:12px;color:#4c5c70;margin-top:3px}
-.empty{padding:12px;color:var(--muted);font-size:13px}
-.month-row{padding:11px 0;border-top:1px solid var(--line)}
-.month-row:first-of-type{border-top:0}
-.month-row strong{font-size:13px}
-.month-row p{margin:4px 0 0;color:#4c5c70;font-size:12px}
-.card-directory{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.directory-item{border:1px solid var(--line);border-radius:11px;padding:10px}
-.directory-item strong{font-size:13px;display:block}
-.directory-item span{font-size:11px;color:var(--muted)}
-details summary{font-weight:800;font-size:14px;cursor:pointer}
-.footer{font-size:11px;color:var(--muted);text-align:center;padding:14px 4px}
-#runtimeMessage{font-size:11px;color:var(--muted);margin-top:6px}
-@media(max-width:390px){.date-card{align-items:flex-start}.card-directory{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<main>
-<header>
- <h1>CardWise</h1>
- <div class="tagline">Your daily credit-card recommendations</div>
-</header>
-
-<section class="date-card">
- <div>
-  <div class="kicker">Recommendations for</div>
-  <div id="todayDate">Loading today's date…</div>
-  <div id="periodName"></div>
-  <div id="runtimeMessage"></div>
- </div>
- <label class="date-control">Choose date
-  <input id="datePicker" type="date">
- </label>
-</section>
-
-<section class="panel">
- <h2>Use these cards today</h2>
- <div class="group">
-  <div class="group-head">UPI</div>
-  <div id="upiCards"></div>
- </div>
- <div class="group">
-  <div class="group-head">NON-UPI</div>
-  <div id="nonupiCards"></div>
- </div>
-</section>
-
-<section class="panel">
- <h2>Monthly strategy</h2>
- <div class="month-row">
-  <strong>1st–14th · Month start</strong>
-  <p>Recommended: HSBC RuPay, Axis RuPay, SBI Visa</p>
-  <p>UPI: HSBC RuPay · Non-UPI: Axis RuPay, SBI Visa</p>
- </div>
- <div class="month-row">
-  <strong>15th–20th · Month middle</strong>
-  <p>Recommended: ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p>
-  <p>UPI: ICICI RuPay, Utkarsh · Non-UPI: ICICI Amazon Pay, HSBC Visa</p>
- </div>
- <div class="month-row">
-  <strong>21st–25th · After the 21st</strong>
-  <p>Recommended: Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p>
-  <p>UPI: Kotak, ICICI RuPay · Non-UPI: SBI Visa, HSBC Visa</p>
- </div>
- <div class="month-row">
-  <strong>26th–last day · Month end</strong>
-  <p>UPI / either: Kotak, Axis RuPay · Non-UPI: SBI Visa</p>
- </div>
-</section>
-
-<section class="panel">
- <details>
-  <summary>All cards and offers</summary>
-  <div class="card-directory" id="allCards" style="margin-top:12px"></div>
- </details>
-</section>
-<div class="footer">PINs and security codes are not included in this file.</div>
+:root{--bg:#f3f6fa;--surface:#fff;--ink:#172538;--muted:#62748a;--line:#dce4ed;--blue:#1557a0;--bluebg:#eaf2fb;--green:#176b45;--red:#a43131}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 14px calc(28px + env(safe-area-inset-bottom)}
+main{max-width:700px;margin:auto}header{padding:22px 3px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-size:27px;font-weight:850;letter-spacing:-.7px}.tagline{font-size:12px;color:var(--muted)}
+button{border:0;border-radius:11px;padding:10px 13px;background:var(--blue);color:white;font:inherit;font-weight:750;cursor:pointer;text-align:center}.secondary{background:#e8eef6;color:#23415f}.danger{background:#fff0f0;color:var(--red);border:1px solid #f0cccc}.smallbtn{font-size:12px;padding:7px 10px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:17px;padding:15px;margin:11px 0}.datebox{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.kicker{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800}.today{font-size:21px;font-weight:850;margin-top:3px}.period{font-size:12px;color:var(--blue);font-weight:800}
+input,select,textarea{width:100%;padding:10px;border:1px solid #bac8d8;border-radius:10px;background:#fff;color:#172538;font:inherit;min-height:42px}input[type=checkbox]{width:auto;min-height:0;accent-color:var(--blue)}label{display:block;font-size:12px;color:#4b5e74;font-weight:700}label input,label select,label textarea{margin-top:5px}
+h2{font-size:17px;margin:0 0 11px}h3{font-size:15px;margin:0}.group{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin:10px 0}.grouphead{background:var(--bluebg);padding:9px 12px;color:#21466f;font-size:12px;font-weight:850}.cardrow{padding:12px;border-top:1px solid var(--line)}.cardrow:first-of-type{border-top:0}.cardname{font-size:16px;font-weight:850}.offer{font-size:12px;color:#52647a;margin-top:3px}.meta,.muted{font-size:11px;color:var(--muted)}.empty{padding:12px;color:var(--muted);font-size:13px}
+.item{border:1px solid var(--line);border-radius:13px;padding:12px;margin:8px 0;background:#fff}.itemtop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.itemactions{display:flex;gap:6px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.checkrow{display:flex;gap:14px;flex-wrap:wrap;margin-top:7px}.checkrow label{display:flex;align-items:center;gap:6px;font-weight:600}
+.notice{background:#fff8e8;border:1px solid #f0dfb5;color:#73551c;border-radius:12px;padding:11px;font-size:12px;margin:10px 0}.success{background:#eaf7ef;border:1px solid #c8e7d2;color:#176b45;border-radius:12px;padding:10px;font-size:12px;margin:10px 0;display:none}.toolbar,.backupbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar button,.backupbar button,.backupbar label{flex:1}.backupbar label{display:flex;align-items:center;justify-content:center;background:#e8eef6;color:#23415f;border-radius:11px;padding:10px 13px;cursor:pointer;font-size:13px}.backupbar input{display:none}
+.gate{position:fixed;inset:0;z-index:9999;background:rgba(12,25,42,.72);display:none;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.gate.show{display:flex}.gatebox{width:min(100%,440px);background:#fff;border-radius:20px;padding:22px;box-shadow:0 18px 70px rgba(0,0,0,.28);max-height:90vh;overflow:auto}
+.gatebox h2{font-size:20px;margin:0 0 9px}.gatebox p{font-size:13px;color:#52647a}.gateactions{display:grid;gap:9px;margin-top:16px}.gateactions button{width:100%}
+.gateicon{font-size:30px;margin-bottom:8px}.gatehint{background:#fff8e8;border:1px solid #f0dfb5;color:#73551c;padding:10px;border-radius:10px;font-size:12px;margin-top:12px}
+.gatefile{display:block!important;background:#e8eef6;color:#23415f;border-radius:11px;padding:12px;text-align:center;font-weight:750;cursor:pointer}.gatefile input{display:none}
+.gate-status{font-size:12px;color:#176b45;margin-top:10px;min-height:18px}
+details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-top:1px solid var(--line)}.month-row:first-of-type{border-top:0}.month-row p{margin:4px 0 0;color:#4c5c70;font-size:12px}.foot{font-size:11px;color:var(--muted);text-align:center;padding:15px 4px}
+@media(max-width:430px){.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.today{font-size:19px}}
+</style></head><body><main>
+<header><div><div class="brand">CardWise</div><div class="tagline">Your cards. Your offers. Better daily choices.</div></div><button class="secondary smallbtn" id="backupTop">Backup</button></header>
+<section class="panel datebox"><div><div class="kicker">Today's recommendations</div><div class="today" id="todayText">Loading date…</div><div class="period" id="periodText"></div></div><label style="max-width:155px">Preview date<input type="date" id="datePicker"></label></section>
+<section class="panel"><h2>Recommended cards</h2><div class="group"><div class="grouphead">UPI</div><div id="upiList"></div></div><div class="group"><div class="grouphead">NON-UPI</div><div id="nonupiList"></div></div></section>
+<section class="panel"><div class="itemtop"><h2 style="margin:0">My cards</h2><button id="addCard">+ Add card</button></div><div id="cardList"></div></section>
+<section class="panel"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
+<label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
+<label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
+<label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
+<label>Billing cycle date<input id="cycle" type="number" min="1" max="31" placeholder="Day of month"></label>
+<label>Statement date<input id="statement" type="number" min="1" max="31" placeholder="Optional"></label>
+<label>Payment due date<input id="due" type="number" min="1" max="31" placeholder="Optional"></label>
+<label class="full">Offers / cashback<textarea id="offers" rows="2" placeholder="e.g. 5% on dining, movie offers"></textarea></label>
+<label class="full">Usage notes<textarea id="notes" rows="2" placeholder="Conditions or reminders"></textarea></label>
+<div class="full"><div class="kicker">Payment categories</div><div class="checkrow"><label><input type="checkbox" id="upi"> UPI</label><label><input type="checkbox" id="nonupi"> Non-UPI</label></div></div>
+<label>Recommend from day<input id="fromDay" type="number" min="1" max="31" value="1"></label>
+<label>Recommend through day<input id="toDay" type="number" min="1" max="31" value="31"></label>
+<label>Optional second range – from<input id="fromDay2" type="number" min="1" max="31" placeholder="Optional"></label>
+<label>Optional second range – through<input id="toDay2" type="number" min="1" max="31" placeholder="Optional"></label>
+</div><div class="notice">Do not enter PINs, CVVs or full card numbers. CardWise does not store them.</div><div class="toolbar"><button type="submit" id="saveCard">Save card details</button><button type="button" class="secondary" id="cancelEdit">Clear form</button></div></form><div class="success" id="saveStatus"></div></section>
+<section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div></section>
+<section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
+<div class="foot">Local storage only. No cloud sync. No PINs, CVVs or full card numbers are stored.</div>
 </main>
-
+<div class="gate" id="backupGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gatebox">
+    <div class="gateicon" id="gateIcon">🛡️</div>
+    <h2 id="gateTitle">Protect your CardWise data</h2>
+    <p id="gateMessage">Your card details have been saved on this device. Create a fresh backup before continuing.</p>
+    <div class="gatehint" id="gateHint">Keep the downloaded JSON file in iPhone Files or Android Downloads. CardWise cannot guarantee that a browser download has been retained.</div>
+    <div class="gateactions" id="gateActions">
+      <button id="gateDownload">Download backup</button>
+      <button class="secondary" id="gateAcknowledge" disabled>I have saved the backup — OK</button>
+    </div>
+    <div class="gate-status" id="gateStatus" aria-live="polite"></div>
+  </div>
+</div>
+<div class="gate" id="restoreGate" role="dialog" aria-modal="true" aria-labelledby="restoreTitle">
+  <div class="gatebox">
+    <div class="gateicon">📂</div>
+    <h2 id="restoreTitle">No cards are loaded</h2>
+    <p>CardWise cannot find any saved cards on this device. Restore your CardWise JSON backup to continue.</p>
+    <div class="gateactions">
+      <label class="gatefile">Choose backup from this device<input id="restoreGateFile" type="file" accept=".json,application/json"></label>
+      <button type="button" class="secondary" id="startFresh">Start with no cards</button>
+    </div>
+    <div class="gate-status" id="restoreStatus" aria-live="polite"></div>
+    <div class="gatehint">If you have not created a backup before, you can close this page and restore data later when you locate the backup file. The dashboard stays locked until cards are restored.</div>
+  </div>
+</div>
 <script>
-(function(){
-"use strict";
-const cards = [
- {name:"HSBC RuPay",cycle:"26th",offer:"Dining and movies"},
- {name:"Kotak",cycle:"21st",offer:""},
- {name:"ICICI RuPay",cycle:"15th",offer:"Movies"},
- {name:"Axis RuPay",cycle:"25th",offer:"Zomato, Blinkit and Paytm utility bills – 5% off"},
- {name:"Utkarsh",cycle:"1st",offer:"5% Myntra · 2% Flipkart · 1% UPI"},
- {name:"HSBC Visa",cycle:"15th",offer:""},
- {name:"SBI Visa",cycle:"20th",offer:""},
- {name:"ICICI Amazon Pay",cycle:"12th",offer:""}
+(()=>{"use strict";
+const KEY="cardwise-user-data-v2", GATE_KEY="cardwise-backup-required-v1";
+const seed=[
+{id:"c1",name:"HSBC RuPay",bank:"HSBC",network:"RuPay",cycle:26,statement:"",due:"",offers:"Dining and movies",notes:"",upi:true,nonupi:false,from:1,to:14},
+{id:"c2",name:"Kotak",bank:"Kotak",network:"RuPay",cycle:21,statement:"",due:"",offers:"",notes:"",upi:true,nonupi:true,from:21,to:31},
+{id:"c3",name:"ICICI RuPay",bank:"ICICI",network:"RuPay",cycle:15,statement:"",due:"",offers:"Movies",notes:"",upi:true,nonupi:false,from:15,to:25},
+{id:"c4",name:"Axis RuPay",bank:"Axis",network:"RuPay",cycle:25,statement:"",due:"",offers:"Zomato, Blinkit and Paytm utility bills – 5% off",notes:"",upi:true,nonupi:true,from:1,to:14,from2:26,to2:31},
+{id:"c5",name:"Utkarsh",bank:"Utkarsh",network:"RuPay",cycle:1,statement:"",due:"",offers:"5% on Myntra; 2% Flipkart; 1% on UPI",notes:"",upi:true,nonupi:false,from:15,to:20},
+{id:"c6",name:"HSBC Visa",bank:"HSBC",network:"Visa",cycle:15,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:15,to:25},
+{id:"c7",name:"SBI Visa",bank:"SBI",network:"Visa",cycle:20,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:1,to:31},
+{id:"c8",name:"ICICI Amazon Pay",bank:"ICICI",network:"Visa",cycle:12,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:15,to:20}
 ];
-const rules = [
- {from:1,to:14,label:"Month start",upi:["HSBC RuPay"],nonupi:["Axis RuPay","SBI Visa"]},
- {from:15,to:20,label:"Month middle",upi:["ICICI RuPay","Utkarsh"],nonupi:["ICICI Amazon Pay","HSBC Visa"]},
- {from:21,to:25,label:"After the 21st",upi:["Kotak","ICICI RuPay"],nonupi:["SBI Visa","HSBC Visa"]},
- {from:26,to:31,label:"Month end",upi:["Kotak","Axis RuPay"],nonupi:["SBI Visa"]}
-];
-function el(id){return document.getElementById(id);}
-function pad(n){return String(n).padStart(2,"0");}
-function localISO(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
-function cardByName(name){return cards.find(c=>c.name===name);}
-function renderCards(target,names){
- const node=el(target);
- if(!names.length){node.innerHTML='<div class="empty">No card specified for this category.</div>';return;}
- node.innerHTML=names.map(name=>{
-  const c=cardByName(name);
-  if(!c)return "";
-  return '<article class="card"><div class="card-name">'+c.name+'</div>'+
-    (c.offer?'<div class="offer">'+c.offer+'</div>':'')+
-    '<div class="offer">Cycle date: '+c.cycle+'</div></article>';
- }).join("");
+const $=id=>document.getElementById(id);
+let storageProblem=false, firstInstall=false;
+let data;
+try{
+ const raw=localStorage.getItem(KEY);
+ if(raw===null){firstInstall=true;data={version:2,cards:seed.map(c=>({...c})),updatedAt:null};localStorage.setItem(KEY,JSON.stringify(data));}
+ else {data=JSON.parse(raw);if(!data||!Array.isArray(data.cards))throw Error("Invalid saved data");}
+}catch(e){storageProblem=true;data={version:2,cards:[],updatedAt:null};}
+function persist(){data.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}${c.due?`<div class="meta">Payment due day: ${esc(c.due)}</div>`:""}</article>`;}
+function renderRecommendations(){
+ const v=$("datePicker").value||iso(new Date()),p=v.split("-").map(Number),dt=new Date(p[0],p[1]-1,p[2],12),day=dt.getDate();
+ $("todayText").textContent=dt.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ $("periodText").textContent=day<=14?"Month start":day<=20?"Month middle":day<=25?"After the 21st":"Month end";
+ const active=data.cards.filter(c=>c.active!==false&&((Number(c.from||1)<=day&&Number(c.to||31)>=day)||(c.from2&&c.to2&&Number(c.from2)<=day&&Number(c.to2)>=day)));
+ for(const [target,mode] of [["upiList","upi"],["nonupiList","nonupi"]]){
+  const found=active.filter(c=>c[mode]);$(target).innerHTML=found.length?found.map(cardHTML).join(""):'<div class="empty">No card assigned for this category on this date. Edit a card to set its recommendation days.</div>';
+ }
 }
-function render(){
- const picker=el("datePicker");
- const value=picker.value;
- if(!value){el("todayDate").textContent="Select a date";return;}
- const bits=value.split("-").map(Number);
- const date=new Date(bits[0],bits[1]-1,bits[2],12,0,0);
- if(!Number.isFinite(date.getTime())){el("todayDate").textContent="Date unavailable";return;}
- const day=date.getDate();
- const rule=rules.find(r=>day>=r.from&&day<=r.to);
- el("todayDate").textContent=date.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"long",year:"numeric"});
- el("periodName").textContent=rule.label;
- renderCards("upiCards",rule.upi);
- renderCards("nonupiCards",rule.nonupi);
+function renderCards(){
+ $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Billing: ${esc(c.cycle||"—")} · Statement: ${esc(c.statement||"—")} · Due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
+ document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>del(b.dataset.delete));
 }
-function start(){
- const picker=el("datePicker");
- picker.value=localISO(new Date());
- picker.addEventListener("change",render);
- picker.addEventListener("input",render);
- el("allCards").innerHTML=cards.map(c=>'<div class="directory-item"><strong>'+c.name+'</strong><span>Cycle: '+c.cycle+'</span>'+(c.offer?'<div class="offer">'+c.offer+'</div>':'')+'</div>').join("");
- render();
- el("runtimeMessage").textContent="Date is based on your phone's local calendar.";
+function refresh(){renderRecommendations();renderCards();$("backupInfo").textContent=data.updatedAt?"Last saved: "+new Date(data.updatedAt).toLocaleString():"Starter card list loaded. No edits saved yet.";}
+function clearForm(){$("cardForm").reset();$("editId").value="";$("fromDay").value=1;$("toDay").value=31;$("fromDay2").value="";$("toDay2").value="";$("formHeading").textContent="Add a card";$("saveCard").textContent="Save card details";}
+function edit(id){
+ const c=data.cards.find(x=>x.id===id);if(!c)return;
+ for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,cycle:c.cycle,statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
+ $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("cardForm").scrollIntoView({behavior:"smooth"});
 }
-if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}
+function downloadBackup(){
+ const obj={app:"CardWise",formatVersion:2,exportedAt:new Date().toISOString(),cards:data.cards};
+ const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="CardWise-backup-"+iso(new Date())+".json";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+ return true;
+}
+function lockForBackup(message){
+ try{localStorage.setItem(GATE_KEY,"1");}catch(e){}
+ $("backupGate").classList.add("show");$("gateTitle").textContent="Back up your CardWise data";
+ $("gateMessage").textContent=message||"Your latest card changes are saved on this device. Download a fresh backup before continuing.";
+ $("gateAcknowledge").disabled=true;$("gateStatus").textContent="";$("gateDownload").disabled=false;
+}
+function unlockAfterBackup(){
+ try{localStorage.removeItem(GATE_KEY);}catch(e){}
+ $("backupGate").classList.remove("show");$("saveStatus").style.display="none";
+ if(data.cards.length===0)showRestoreGate();
+}
+function showRestoreGate(){
+ $("restoreGate").classList.add("show");
+ $("restoreStatus").textContent=storageProblem?"Saved data could not be read. Please select a valid CardWise backup.":"";
+}
+function validateBackup(x){
+ if(!x||!Array.isArray(x.cards)||!x.cards.every(c=>c&&typeof c.name==="string"&&c.name.trim()))throw Error("This file is not a valid CardWise backup.");
+ return x.cards;
+}
+async function restoreFile(file, fromGate){
+ try{
+  const x=JSON.parse(await file.text()),cards=validateBackup(x);
+  if(!cards.length)throw Error("The selected backup contains zero cards.");
+  if(!fromGate&&!confirm("Restore "+cards.length+" cards? This replaces the current card list."))return;
+  if(fromGate&&!confirm("Restore "+cards.length+" cards from this backup?"))return;
+  data={version:2,cards,updatedAt:new Date().toISOString()};persist();clearForm();refresh();
+  $("restoreGate").classList.remove("show");
+  lockForBackup("Your backup has been restored. Download a fresh copy of the restored CardWise data before continuing.");
+ }catch(err){(fromGate?$("restoreStatus"):null).textContent=err.message;if(!fromGate)alert("Restore failed: "+err.message);}
+}
+function del(id){
+ const c=data.cards.find(x=>x.id===id);if(!c||!confirm("Delete "+c.name+"?"))return;
+ data.cards=data.cards.filter(x=>x.id!==id);
+ try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}
+ refresh();
+ lockForBackup(data.cards.length===0
+  ?"You deleted the last card. The empty card list has been saved locally. Download a backup of this latest change first; after acknowledging it, CardWise will ask you to restore a backup or recover your cards."
+  :"You deleted a card. The updated card list is saved locally. Download a fresh backup before continuing.");
+}
+$("cardForm").onsubmit=e=>{
+ e.preventDefault();
+ const name=$("name").value.trim(),from=+$("fromDay").value,to=+$("toDay").value,from2=$("fromDay2").value?+$("fromDay2").value:"",to2=$("toDay2").value?+$("toDay2").value:"";
+ if(!name){alert("Enter a card name.");return;}
+ if(from<1||to>31||from>to||((from2||to2)&&(!from2||!to2||from2<1||to2>31||from2>to2))){alert("Enter valid recommendation day ranges from 1 to 31.");return;}
+ const id=$("editId").value||"card-"+Date.now(),c={id,name,bank:$("bank").value.trim(),network:$("network").value,cycle:$("cycle").value,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=data.cards.some(x=>x.id===id);
+ if(!confirm((exists?"Confirm updates to ":"Add ")+name+"? This will save the information on this device."))return;
+ if(exists)data.cards=data.cards.map(x=>x.id===id?c:x);else data.cards.push(c);
+ try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}
+ clearForm();refresh();lockForBackup("Your card details have been saved on this device. Download a backup now. CardWise will remain locked until you acknowledge that you have saved the file.");
+};
+$("addCard").onclick=()=>{clearForm();$("cardForm").scrollIntoView({behavior:"smooth"});};
+$("cancelEdit").onclick=clearForm;
+$("datePicker").value=iso(new Date());$("datePicker").onchange=renderRecommendations;$("datePicker").oninput=renderRecommendations;
+$("exportBtn").onclick=()=>downloadBackup();
+$("backupTop").onclick=()=>downloadBackup();
+$("gateDownload").onclick=()=>{
+ try{downloadBackup();$("gateAcknowledge").disabled=false;$("gateStatus").textContent="Backup download requested. Check Files / Downloads, then tap OK to continue.";}
+ catch(e){$("gateStatus").textContent="Download could not be started. Try again or use a different browser.";}
+};
+$("gateAcknowledge").onclick=()=>{
+ if($("gateAcknowledge").disabled)return;
+ if(!confirm("Have you saved the CardWise backup file on your device? Tap OK only after checking your Files or Downloads folder."))return;
+ unlockAfterBackup();
+};
+$("importFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,false);e.target.value="";};
+$("restoreGateFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,true);e.target.value="";};
+$("startFresh").onclick=()=>{if(confirm("Start with an empty card list? You can add cards manually. A backup will be required after your first change."))$("restoreGate").classList.remove("show");};
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+refresh();
+if(storageProblem)showRestoreGate();
+else if(localStorage.getItem(GATE_KEY)==="1")lockForBackup("A backup was still pending when CardWise was last closed. Download and acknowledge the latest backup to continue.");
+else if(data.cards.length===0)showRestoreGate();
+else if(firstInstall)lockForBackup("Your CardWise starter card list is ready and saved on this device. Create your first backup before continuing.");
 })();
-</script>
-<script>
-if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-  });
-}
-</script>
-</body>
-</html>
+</script></body></html>

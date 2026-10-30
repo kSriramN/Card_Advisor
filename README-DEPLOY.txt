@@ -1,32 +1,32 @@
-CARDWISE PWA — DEPLOYMENT
+CARDWISE MANAGER PWA — FINAL BUILD
 
-This folder contains a PWA-ready version of CardWise.
+Files:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+- icon.svg
 
-IMPORTANT:
-- A PWA must be served from HTTPS (or localhost). Opening index.html as a local file will not enable installation/offline service-worker features.
-- No card PINs or security codes are included.
-- The app's date recommendations and monthly strategy are in index.html.
+Deploy:
+1. Extract this ZIP.
+2. Upload all four files to the root of your existing GitHub Pages repository (replace the older versions).
+3. Commit/push and wait for GitHub Pages deployment to finish.
+4. Open the published HTTPS GitHub Pages URL in Safari on iPhone or Chrome on Android.
+5. On iPhone, use Safari Share -> Add to Home Screen.
 
-GITHUB PAGES QUICK SETUP:
-1. Create a new GitHub repository, e.g. cardwise.
-2. Upload all four files from this folder to the repository root:
-   index.html
-   manifest.webmanifest
-   service-worker.js
-   icon.svg
-3. In the repository, open Settings > Pages.
-4. Under Build and deployment, select Deploy from a branch.
-5. Select branch main and folder /(root), then Save.
-6. Wait for GitHub Pages to publish the site. Open the HTTPS URL shown there.
+Mandatory backup protection:
+- After adding, editing, or deleting a card, CardWise saves locally and blocks the app behind a backup screen.
+- Tap Download backup, check the downloaded JSON in Files / Downloads, then acknowledge with OK.
+- If the app detects zero cards or unreadable saved data, it blocks the dashboard and asks you to restore a CardWise JSON backup from the device.
+- After restoring, it asks you to download a fresh backup before continuing.
+- The gate remains pending if the page is closed before acknowledgement.
 
-IPHONE:
-1. Open the published HTTPS URL in Safari.
-2. Tap Share.
-3. Scroll and choose Add to Home Screen.
-4. Enable Open as Web App if shown, then tap Add.
+Important limitations:
+- The browser cannot prove that a downloaded file was permanently saved or copied elsewhere. The OK step is a user acknowledgement after the download is initiated.
+- Card data remains in browser storage on that device. There is no cloud sync. Clearing browser/site data can erase local data.
+- Keep the JSON backup somewhere safe and make another copy when changing phones.
+- Never enter card PINs, CVVs, passwords, or full card numbers. CardWise does not request or store them.
+- Existing card strategy and sample cards are preserved. Recommendation logic uses the configured date ranges and UPI / Non-UPI flags; it does not calculate merchant-specific reward rankings.
 
-ANDROID:
-1. Open the HTTPS URL in Chrome.
-2. Use the Install app prompt or menu > Install app / Add to Home screen.
+For an update, replace the four files and keep the same browser/site data. Do not clear website data. Cache version has been incremented to refresh the app shell.
 
-After the first successful visit while online, the service worker caches the app shell for offline use.
+- If no backup is available, the zero-card screen also offers an explicit 'Start with no cards' option so the user can add cards manually; the next card change triggers the mandatory backup gate.

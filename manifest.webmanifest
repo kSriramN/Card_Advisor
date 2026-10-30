@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "CardWise \u2013 Credit Card Planner",
+  "name": "CardWise \u2013 Credit Card Manager",
   "short_name": "CardWise",
-  "description": "Daily date-based credit card recommendations.",
+  "description": "Manage cards, billing dates, offers and daily recommendations.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
