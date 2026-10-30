@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f6fa">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>CardWise</title>
+<style>
+:root{--bg:#f3f6fa;--white:#fff;--ink:#182538;--muted:#64748b;--line:#dce4ed;--blue:#1557a0;--bluebg:#eaf2fb;--green:#176b45}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.45;padding:env(safe-area-inset-top) 15px calc(24px + env(safe-area-inset-bottom))}
+main{max-width:640px;margin:0 auto}
+header{padding:22px 2px 14px}
+h1{font-size:27px;line-height:1.1;margin:0;font-weight:850;letter-spacing:-.7px}
+.tagline{color:var(--muted);font-size:13px;margin-top:5px}
+.date-card,.panel{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:15px;margin:10px 0 14px}
+.date-card{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.kicker{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800;color:var(--muted)}
+#todayDate{font-size:22px;font-weight:850;color:#14243a;margin-top:3px;min-height:29px}
+#periodName{font-size:12px;font-weight:750;color:var(--blue);margin-top:2px}
+.date-control{font-size:11px;color:var(--muted);font-weight:700}
+input[type=date]{display:block;margin-top:5px;padding:9px 10px;min-height:42px;border:1px solid #aebdce;border-radius:10px;background:#fff;color:#17263b;color-scheme:light;font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+h2{font-size:17px;margin:0 0 11px}
+h3{font-size:14px;margin:0;font-weight:800}
+.group{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin:10px 0;background:#fff}
+.group-head{background:var(--bluebg);padding:9px 12px;font-size:12px;font-weight:850;color:#21466f}
+.card{padding:12px;border-top:1px solid var(--line)}
+.card:first-of-type{border-top:0}
+.card-name{font-size:16px;font-weight:800}
+.offer{font-size:12px;color:#4c5c70;margin-top:3px}
+.empty{padding:12px;color:var(--muted);font-size:13px}
+.month-row{padding:11px 0;border-top:1px solid var(--line)}
+.month-row:first-of-type{border-top:0}
+.month-row strong{font-size:13px}
+.month-row p{margin:4px 0 0;color:#4c5c70;font-size:12px}
+.card-directory{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.directory-item{border:1px solid var(--line);border-radius:11px;padding:10px}
+.directory-item strong{font-size:13px;display:block}
+.directory-item span{font-size:11px;color:var(--muted)}
+details summary{font-weight:800;font-size:14px;cursor:pointer}
+.footer{font-size:11px;color:var(--muted);text-align:center;padding:14px 4px}
+#runtimeMessage{font-size:11px;color:var(--muted);margin-top:6px}
+@media(max-width:390px){.date-card{align-items:flex-start}.card-directory{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <h1>CardWise</h1>
+ <div class="tagline">Your daily credit-card recommendations</div>
+</header>
+
+<section class="date-card">
+ <div>
+  <div class="kicker">Recommendations for</div>
+  <div id="todayDate">Loading today's date…</div>
+  <div id="periodName"></div>
+  <div id="runtimeMessage"></div>
+ </div>
+ <label class="date-control">Choose date
+  <input id="datePicker" type="date">
+ </label>
+</section>
+
+<section class="panel">
+ <h2>Use these cards today</h2>
+ <div class="group">
+  <div class="group-head">UPI</div>
+  <div id="upiCards"></div>
+ </div>
+ <div class="group">
+  <div class="group-head">NON-UPI</div>
+  <div id="nonupiCards"></div>
+ </div>
+</section>
+
+<section class="panel">
+ <h2>Monthly strategy</h2>
+ <div class="month-row">
+  <strong>1st–14th · Month start</strong>
+  <p>Recommended: HSBC RuPay, Axis RuPay, SBI Visa</p>
+  <p>UPI: HSBC RuPay · Non-UPI: Axis RuPay, SBI Visa</p>
+ </div>
+ <div class="month-row">
+  <strong>15th–20th · Month middle</strong>
+  <p>Recommended: ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p>
+  <p>UPI: ICICI RuPay, Utkarsh · Non-UPI: ICICI Amazon Pay, HSBC Visa</p>
+ </div>
+ <div class="month-row">
+  <strong>21st–25th · After the 21st</strong>
+  <p>Recommended: Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p>
+  <p>UPI: Kotak, ICICI RuPay · Non-UPI: SBI Visa, HSBC Visa</p>
+ </div>
+ <div class="month-row">
+  <strong>26th–last day · Month end</strong>
+  <p>UPI / either: Kotak, Axis RuPay · Non-UPI: SBI Visa</p>
+ </div>
+</section>
+
+<section class="panel">
+ <details>
+  <summary>All cards and offers</summary>
+  <div class="card-directory" id="allCards" style="margin-top:12px"></div>
+ </details>
+</section>
+<div class="footer">PINs and security codes are not included in this file.</div>
+</main>
+
+<script>
+(function(){
+"use strict";
+const cards = [
+ {name:"HSBC RuPay",cycle:"26th",offer:"Dining and movies"},
+ {name:"Kotak",cycle:"21st",offer:""},
+ {name:"ICICI RuPay",cycle:"15th",offer:"Movies"},
+ {name:"Axis RuPay",cycle:"25th",offer:"Zomato, Blinkit and Paytm utility bills – 5% off"},
+ {name:"Utkarsh",cycle:"1st",offer:"5% Myntra · 2% Flipkart · 1% UPI"},
+ {name:"HSBC Visa",cycle:"15th",offer:""},
+ {name:"SBI Visa",cycle:"20th",offer:""},
+ {name:"ICICI Amazon Pay",cycle:"12th",offer:""}
+];
+const rules = [
+ {from:1,to:14,label:"Month start",upi:["HSBC RuPay"],nonupi:["Axis RuPay","SBI Visa"]},
+ {from:15,to:20,label:"Month middle",upi:["ICICI RuPay","Utkarsh"],nonupi:["ICICI Amazon Pay","HSBC Visa"]},
+ {from:21,to:25,label:"After the 21st",upi:["Kotak","ICICI RuPay"],nonupi:["SBI Visa","HSBC Visa"]},
+ {from:26,to:31,label:"Month end",upi:["Kotak","Axis RuPay"],nonupi:["SBI Visa"]}
+];
+function el(id){return document.getElementById(id);}
+function pad(n){return String(n).padStart(2,"0");}
+function localISO(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function cardByName(name){return cards.find(c=>c.name===name);}
+function renderCards(target,names){
+ const node=el(target);
+ if(!names.length){node.innerHTML='<div class="empty">No card specified for this category.</div>';return;}
+ node.innerHTML=names.map(name=>{
+  const c=cardByName(name);
+  if(!c)return "";
+  return '<article class="card"><div class="card-name">'+c.name+'</div>'+
+    (c.offer?'<div class="offer">'+c.offer+'</div>':'')+
+    '<div class="offer">Cycle date: '+c.cycle+'</div></article>';
+ }).join("");
+}
+function render(){
+ const picker=el("datePicker");
+ const value=picker.value;
+ if(!value){el("todayDate").textContent="Select a date";return;}
+ const bits=value.split("-").map(Number);
+ const date=new Date(bits[0],bits[1]-1,bits[2],12,0,0);
+ if(!Number.isFinite(date.getTime())){el("todayDate").textContent="Date unavailable";return;}
+ const day=date.getDate();
+ const rule=rules.find(r=>day>=r.from&&day<=r.to);
+ el("todayDate").textContent=date.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"long",year:"numeric"});
+ el("periodName").textContent=rule.label;
+ renderCards("upiCards",rule.upi);
+ renderCards("nonupiCards",rule.nonupi);
+}
+function start(){
+ const picker=el("datePicker");
+ picker.value=localISO(new Date());
+ picker.addEventListener("change",render);
+ picker.addEventListener("input",render);
+ el("allCards").innerHTML=cards.map(c=>'<div class="directory-item"><strong>'+c.name+'</strong><span>Cycle: '+c.cycle+'</span>'+(c.offer?'<div class="offer">'+c.offer+'</div>':'')+'</div>').join("");
+ render();
+ el("runtimeMessage").textContent="Date is based on your phone's local calendar.";
+}
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
