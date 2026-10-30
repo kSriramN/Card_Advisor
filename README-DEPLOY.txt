@@ -30,3 +30,24 @@ Important limitations:
 For an update, replace the four files and keep the same browser/site data. Do not clear website data. Cache version has been incremented to refresh the app shell.
 
 - If no backup is available, the zero-card screen also offers an explicit 'Start with no cards' option so the user can add cards manually; the next card change triggers the mandatory backup gate.
+
+
+EXPENSE TRACKER / CREDIT UTILISATION (v5)
+- Existing saved cards remain in the same localStorage key (cardwise-user-data-v2).
+- Each card has an editable credit limit.
+- Record purchases, payments made to the card, and refunds/reversals.
+- Outstanding balance is calculated as purchases minus payments minus refunds (floored at zero).
+- Dashboard shows period-based purchases by card, payments, refunds, total outstanding, total limits, and overall utilisation.
+- Per-card view shows outstanding, available credit, and utilisation.
+- Transaction additions and deletions trigger the mandatory backup gate.
+- Backup JSON now includes both cards and transactions. Older backups containing only cards still restore; their transaction history starts empty.
+- Data remains local to each browser/device. No automatic bank-feed connection or cloud sync is included.
+
+
+BILL PAYMENT TRACKER (v6)
+- Record each generated statement manually with card, bill month, statement date, due date and amount due.
+- Bills start as PAYMENT PENDING and can be marked PAID with a payment date, or changed back to unpaid.
+- Dashboard shows counts of recorded, paid and pending bills plus pending amount.
+- Bill creation, status changes and deletion trigger the mandatory backup gate.
+- Bill records are included in JSON backups. Existing v5 backups without bills remain restorable.
+- CardWise does not automatically fetch statements or confirm payments with banks; the user records bill amounts and marks payment after paying.

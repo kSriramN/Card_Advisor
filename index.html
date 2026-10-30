@@ -21,6 +21,17 @@ h2{font-size:17px;margin:0 0 11px}h3{font-size:15px;margin:0}.group{border:1px s
 .gate-status{font-size:12px;color:#176b45;margin-top:10px;min-height:18px}
 details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-top:1px solid var(--line)}.month-row:first-of-type{border-top:0}.month-row p{margin:4px 0 0;color:#4c5c70;font-size:12px}.foot{font-size:11px;color:var(--muted);text-align:center;padding:15px 4px}
 @media(max-width:430px){.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.today{font-size:19px}}
+
+/* Expense tracker */
+.statgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:#f2f6fb;border:1px solid var(--line);border-radius:12px;padding:10px;min-width:0}
+.stat strong{display:block;font-size:18px;overflow-wrap:anywhere}.stat span{font-size:10px;color:var(--muted)}
+.chartrow{display:grid;grid-template-columns:105px 1fr 90px;align-items:center;gap:8px;margin:10px 0;font-size:12px}
+.bartrack{height:12px;background:#e8eef6;border-radius:99px;overflow:hidden}.barfill{height:100%;background:#2773bd;border-radius:99px}
+.utiltrack{height:9px;background:#e8eef6;border-radius:99px;overflow:hidden;margin-top:5px}.utilfill{height:100%;background:#20835b}
+.txn{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.txn:first-child{border-top:0}.txn small{display:block;color:var(--muted)}
+@media(max-width:430px){.statgrid{grid-template-columns:1fr 1fr}.chartrow{grid-template-columns:82px 1fr 75px;font-size:11px}.stat strong{font-size:16px}}
 </style></head><body><main>
 <header><div><div class="brand">CardWise</div><div class="tagline">Your cards. Your offers. Better daily choices.</div></div><button class="secondary smallbtn" id="backupTop">Backup</button></header>
 <section class="panel datebox"><div><div class="kicker">Today's recommendations</div><div class="today" id="todayText">Loading date…</div><div class="period" id="periodText"></div></div><label style="max-width:155px">Preview date<input type="date" id="datePicker"></label></section>
@@ -31,6 +42,7 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
 <label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
 <label>Billing cycle date<input id="cycle" type="number" min="1" max="31" placeholder="Day of month"></label>
+<label>Credit limit (₹)<input id="creditLimit" type="number" min="0" step="0.01" placeholder="e.g. 100000"></label>
 <label>Statement date<input id="statement" type="number" min="1" max="31" placeholder="Optional"></label>
 <label>Payment due date<input id="due" type="number" min="1" max="31" placeholder="Optional"></label>
 <label class="full">Offers / cashback<textarea id="offers" rows="2" placeholder="e.g. 5% on dining, movie offers"></textarea></label>
@@ -41,6 +53,49 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
 <label>Optional second range – from<input id="fromDay2" type="number" min="1" max="31" placeholder="Optional"></label>
 <label>Optional second range – through<input id="toDay2" type="number" min="1" max="31" placeholder="Optional"></label>
 </div><div class="notice">Do not enter PINs, CVVs or full card numbers. CardWise does not store them.</div><div class="toolbar"><button type="submit" id="saveCard">Save card details</button><button type="button" class="secondary" id="cancelEdit">Clear form</button></div></form><div class="success" id="saveStatus"></div></section>
+
+<section class="panel" id="expenseTracker">
+ <div class="itemtop"><h2 style="margin:0">Expenses & credit usage</h2><span class="period">Local tracker</span></div>
+ <p class="muted">Record purchases, card payments and refunds. Outstanding = purchases − payments − refunds.</p>
+ <div class="statgrid" id="expenseStats"></div>
+ <div class="toolbar" style="margin:12px 0"><label style="flex:1">Report period<select id="reportPeriod"><option value="month">This month</option><option value="all">All time</option></select></label></div>
+ <h3 style="margin:14px 0 8px">Spend by card</h3><div id="spendChart"></div>
+ <h3 style="margin:16px 0 8px">Credit utilisation by card</h3><div id="utilisationList"></div>
+ <details style="margin-top:14px"><summary>Record a transaction</summary>
+  <form id="txnForm" style="margin-top:12px">
+   <div class="formgrid">
+    <label>Transaction type<select id="txnType"><option value="purchase">Purchase / expense</option><option value="payment">Payment made to card</option><option value="refund">Refund / reversal</option></select></label>
+    <label>Card<select id="txnCard" required></select></label>
+    <label>Amount (₹)<input id="txnAmount" type="number" min="0.01" step="0.01" required placeholder="e.g. 1250"></label>
+    <label>Date<input id="txnDate" type="date" required></label>
+    <label>Merchant / description<input id="txnDescription" maxlength="100" placeholder="e.g. Grocery, Amazon"></label>
+    <label>Category<select id="txnCategory"><option>Shopping</option><option>Food & dining</option><option>Groceries</option><option>Utilities</option><option>Travel</option><option>Fuel</option><option>Entertainment</option><option>Healthcare</option><option>Education</option><option>Payment</option><option>Refund</option><option>Other</option></select></label>
+   </div>
+   <div class="toolbar" style="margin-top:12px"><button type="submit">Save transaction</button><button type="button" class="secondary" id="clearTxn">Clear</button></div>
+  </form>
+ </details>
+ <h3 style="margin:16px 0 8px">Transaction history</h3><div id="transactionList"></div>
+</section>
+
+<section class="panel" id="billTracker">
+ <div class="itemtop"><h2 style="margin:0">Credit card bills</h2><span class="period">Payment tracker</span></div>
+ <p class="muted">Enter the statement amount when your bank generates a bill. Mark it paid after you make the payment.</p>
+ <div class="statgrid" id="billStats"></div>
+ <details style="margin-top:12px" open>
+  <summary>Add a generated bill</summary>
+  <form id="billForm" style="margin-top:12px">
+   <div class="formgrid">
+    <label>Credit card<select id="billCard" required></select></label>
+    <label>Bill month<input id="billMonth" type="month" required></label>
+    <label>Statement generated date<input id="billStatementDate" type="date" required></label>
+    <label>Payment due date<input id="billDueDate" type="date" required></label>
+    <label class="full">Total amount due (₹)<input id="billAmount" type="number" min="0.01" step="0.01" required placeholder="Enter statement total"></label>
+   </div>
+   <div class="toolbar" style="margin-top:12px"><button type="submit">Save bill</button><button type="button" class="secondary" id="clearBill">Clear</button></div>
+  </form>
+ </details>
+ <h3 style="margin:16px 0 8px">Bill payment status</h3><div id="billList"></div>
+</section>
 <section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div></section>
 <section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
 <div class="foot">Local storage only. No cloud sync. No PINs, CVVs or full card numbers are stored.</div>
@@ -91,6 +146,8 @@ try{
  const raw=localStorage.getItem(KEY);
  if(raw===null){firstInstall=true;data={version:2,cards:seed.map(c=>({...c})),updatedAt:null};localStorage.setItem(KEY,JSON.stringify(data));}
  else {data=JSON.parse(raw);if(!data||!Array.isArray(data.cards))throw Error("Invalid saved data");}
+if(!Array.isArray(data.transactions))data.transactions=[];
+if(!Array.isArray(data.bills))data.bills=[];
 }catch(e){storageProblem=true;data={version:2,cards:[],updatedAt:null};}
 // Correct the original seeded recommendation modes for existing CardWise installs.
 for(const c of data.cards){
@@ -112,19 +169,19 @@ function renderRecommendations(){
  }
 }
 function renderCards(){
- $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Billing: ${esc(c.cycle||"—")} · Statement: ${esc(c.statement||"—")} · Due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
+ $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Billing: ${esc(c.cycle||"—")} · Statement: ${esc(c.statement||"—")} · Due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>del(b.dataset.delete));
 }
-function refresh(){renderRecommendations();renderCards();$("backupInfo").textContent=data.updatedAt?"Last saved: "+new Date(data.updatedAt).toLocaleString():"Starter card list loaded. No edits saved yet.";}
+function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$("backupInfo").textContent=data.updatedAt?"Last saved: "+new Date(data.updatedAt).toLocaleString():"Starter card list loaded. No edits saved yet.";}
 function clearForm(){$("cardForm").reset();$("editId").value="";$("fromDay").value=1;$("toDay").value=31;$("fromDay2").value="";$("toDay2").value="";$("formHeading").textContent="Add a card";$("saveCard").textContent="Save card details";}
 function edit(id){
  const c=data.cards.find(x=>x.id===id);if(!c)return;
- for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,cycle:c.cycle,statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
+ for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,cycle:c.cycle,creditLimit:c.creditLimit||"",statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
  $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("cardForm").scrollIntoView({behavior:"smooth"});
 }
 function downloadBackup(){
- const obj={app:"CardWise",formatVersion:2,exportedAt:new Date().toISOString(),cards:data.cards};
+ const obj={app:"CardWise",formatVersion:3,exportedAt:new Date().toISOString(),cards:data.cards,transactions:data.transactions||[],bills:data.bills||[]};
  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=url;a.download="CardWise-backup-"+iso(new Date())+".json";document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>URL.revokeObjectURL(url),3000);
@@ -155,7 +212,7 @@ async function restoreFile(file, fromGate){
   if(!cards.length)throw Error("The selected backup contains zero cards.");
   if(!fromGate&&!confirm("Restore "+cards.length+" cards? This replaces the current card list."))return;
   if(fromGate&&!confirm("Restore "+cards.length+" cards from this backup?"))return;
-  data={version:2,cards,updatedAt:new Date().toISOString()};persist();clearForm();refresh();
+  data={version:3,cards,transactions:Array.isArray(x.transactions)?x.transactions:[],bills:Array.isArray(x.bills)?x.bills:[],updatedAt:new Date().toISOString()};persist();clearForm();refresh();
   $("restoreGate").classList.remove("show");
   lockForBackup("Your backup has been restored. Download a fresh copy of the restored CardWise data before continuing.");
  }catch(err){(fromGate?$("restoreStatus"):null).textContent=err.message;if(!fromGate)alert("Restore failed: "+err.message);}
@@ -169,12 +226,118 @@ function del(id){
   ?"You deleted the last card. The empty card list has been saved locally. Download a backup of this latest change first; after acknowledging it, CardWise will ask you to restore a backup or recover your cards."
   :"You deleted a card. The updated card list is saved locally. Download a fresh backup before continuing.");
 }
+
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+function monthKey(d){return String(d||"").slice(0,7);}
+function cardBalance(cardId){
+ const tx=(data.transactions||[]).filter(t=>t.cardId===cardId);
+ const purchases=tx.filter(t=>t.type==="purchase").reduce((s,t)=>s+Number(t.amount),0);
+ const payments=tx.filter(t=>t.type==="payment").reduce((s,t)=>s+Number(t.amount),0);
+ const refunds=tx.filter(t=>t.type==="refund").reduce((s,t)=>s+Number(t.amount),0);
+ return {purchases,payments,refunds,outstanding:Math.max(0,purchases-payments-refunds)};
+}
+function refreshTxnCards(){
+ const current=$("txnCard").value;
+ $("txnCard").innerHTML=data.cards.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+ if(data.cards.some(c=>c.id===current))$("txnCard").value=current;
+}
+function renderExpenses(){
+ const period=$("reportPeriod").value||"month",nowKey=monthKey(iso(new Date()));
+ const tx=(data.transactions||[]).filter(t=>period==="all"||monthKey(t.date)===nowKey);
+ const purchases=tx.filter(t=>t.type==="purchase").reduce((s,t)=>s+Number(t.amount),0);
+ const payments=tx.filter(t=>t.type==="payment").reduce((s,t)=>s+Number(t.amount),0);
+ const refunds=tx.filter(t=>t.type==="refund").reduce((s,t)=>s+Number(t.amount),0);
+ const outstanding=data.cards.reduce((s,c)=>s+cardBalance(c.id).outstanding,0);
+ const totalLimits=data.cards.reduce((s,c)=>s+Number(c.creditLimit||0),0);
+ const utilisation=totalLimits?outstanding/totalLimits*100:0;
+ $("expenseStats").innerHTML=[
+  ["Purchases",money(purchases)],["Payments",money(payments)],["Refunds",money(refunds)],
+  ["Outstanding",money(outstanding)],["Total credit limit",money(totalLimits)],["Overall utilisation",totalLimits?utilisation.toFixed(1)+"%":"Set limits"]
+ ].map(([label,val])=>`<div class="stat"><span>${label}</span><strong>${val}</strong></div>`).join("");
+ const spendByCard=data.cards.map(c=>({name:c.name,amount:tx.filter(t=>t.cardId===c.id&&t.type==="purchase").reduce((s,t)=>s+Number(t.amount),0)})).filter(x=>x.amount>0).sort((a,b)=>b.amount-a.amount);
+ const max=Math.max(1,...spendByCard.map(x=>x.amount));
+ $("spendChart").innerHTML=spendByCard.length?spendByCard.map(x=>`<div class="chartrow"><b>${esc(x.name)}</b><div class="bartrack"><div class="barfill" style="width:${x.amount/max*100}%"></div></div><span style="text-align:right">${money(x.amount)}</span></div>`).join(""):'<div class="empty">No purchases recorded for this period.</div>';
+ $("utilisationList").innerHTML=data.cards.length?data.cards.map(c=>{const b=cardBalance(c.id),lim=Number(c.creditLimit||0),pct=lim?Math.min(100,b.outstanding/lim*100):0;return `<div class="item"><div class="itemtop"><b>${esc(c.name)}</b><b>${money(b.outstanding)}</b></div><div class="muted">Limit: ${lim?money(lim):"Not entered"} · Available: ${lim?money(Math.max(0,lim-b.outstanding)):"—"} · Utilisation: ${lim?pct.toFixed(1)+"%":"—"}</div>${lim?`<div class="utiltrack"><div class="utilfill" style="width:${pct}%"></div></div>`:""}</div>`}).join(""):'<div class="empty">Add a card to start tracking.</div>';
+ const history=(data.transactions||[]).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+ $("transactionList").innerHTML=history.length?history.map(t=>{const c=data.cards.find(x=>x.id===t.cardId);const label=t.type==="purchase"?"Purchase":t.type==="payment"?"Payment":"Refund";return `<div class="txn"><div><b>${esc(t.description||label)}</b><small>${esc(c?.name||"Card removed")} · ${esc(t.date)} · ${esc(t.category||"Other")} · ${label}</small></div><div style="text-align:right;white-space:nowrap"><b>${money(t.amount)}</b><br><button class="danger smallbtn" data-txdelete="${esc(t.id)}">Delete</button></div></div>`}).join(""):'<div class="empty">No transactions recorded yet.</div>';
+ document.querySelectorAll("[data-txdelete]").forEach(b=>b.onclick=()=>{if(!confirm("Delete this transaction?"))return;const old=data.transactions;data.transactions=old.filter(t=>t.id!==b.dataset.txdelete);try{persist();refresh();lockForBackup("Transaction deleted. Download a fresh backup before continuing.");}catch(e){data.transactions=old;alert("Could not save this change.");}});
+ refreshTxnCards();
+}
+$("txnDate").value=iso(new Date());
+$("reportPeriod").onchange=renderExpenses;
+$("txnType").onchange=()=>{const type=$("txnType").value;$("txnCategory").value=type==="payment"?"Payment":type==="refund"?"Refund":"Shopping";};
+$("clearTxn").onclick=()=>$("txnForm").reset();
+$("txnForm").onsubmit=e=>{
+ e.preventDefault();
+ const amount=Number($("txnAmount").value),cardId=$("txnCard").value;
+ if(!cardId||!data.cards.some(c=>c.id===cardId)){alert("Please add or select a card first.");return;}
+ if(!Number.isFinite(amount)||amount<=0){alert("Enter an amount greater than zero.");return;}
+ const txn={id:"txn-"+Date.now(),cardId,type:$("txnType").value,amount,date:$("txnDate").value,description:$("txnDescription").value.trim(),category:$("txnCategory").value};
+ if(!txn.date){alert("Select a transaction date.");return;}
+ data.transactions.push(txn);
+ try{persist();}catch(err){data.transactions.pop();alert("Could not save this transaction locally.");return;}
+ $("txnForm").reset();$("txnDate").value=iso(new Date());refresh();lockForBackup("Transaction saved. Download a fresh backup before continuing.");
+};
+
+
+function refreshBillCards(){
+ const current=$("billCard").value;
+ $("billCard").innerHTML=data.cards.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("");
+ if(data.cards.some(c=>c.id===current))$("billCard").value=current;
+}
+function renderBills(){
+ const bills=(data.bills||[]).slice().sort((a,b)=>(b.statementDate||"").localeCompare(a.statementDate||""));
+ const unpaid=bills.filter(b=>!b.paid),paid=bills.filter(b=>b.paid);
+ const unpaidTotal=unpaid.reduce((s,b)=>s+Number(b.amount||0),0);
+ $("billStats").innerHTML=[
+  ["Bills recorded",bills.length],["Paid",paid.length],["Pending",unpaid.length],["Pending amount",money(unpaidTotal)]
+ ].map(([k,v])=>`<div class="stat"><span>${k}</span><strong>${typeof v==="number"&&k==="Pending amount"?money(v):v}</strong></div>`).join("");
+ $("billList").innerHTML=bills.length?bills.map(b=>{
+  const c=data.cards.find(x=>x.id===b.cardId),status=b.paid?'<span style="color:#176b45;font-weight:800">✓ PAID</span>':'<span style="color:#a36a13;font-weight:800">● PAYMENT PENDING</span>';
+  return `<article class="item"><div class="itemtop"><div><b>${esc(c?.name||"Card removed")}</b><div class="muted">${esc(b.billMonth)} · Statement: ${esc(b.statementDate)} · Due: ${esc(b.dueDate)}</div></div><div style="text-align:right">${status}<div><b>${money(b.amount)}</b></div></div></div>${b.paid?`<div class="muted">Paid on: ${esc(b.paidDate||"Date not recorded")}</div>`:""}<div class="toolbar" style="margin-top:9px">${b.paid?`<button class="secondary smallbtn" data-bill-unpay="${esc(b.id)}">Mark unpaid</button>`:`<button class="smallbtn" data-bill-pay="${esc(b.id)}">✓ Mark as paid</button>`}<button class="danger smallbtn" data-bill-delete="${esc(b.id)}">Delete</button></div></article>`;
+ }).join(""):'<div class="empty">No bills recorded yet. Add a bill when your statement is generated.</div>';
+ document.querySelectorAll("[data-bill-pay]").forEach(btn=>btn.onclick=()=>{
+  const b=data.bills.find(x=>x.id===btn.dataset.billPay);if(!b)return;
+  const date=prompt("Enter payment date (YYYY-MM-DD):",iso(new Date()));if(!date)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert("Use YYYY-MM-DD format.");return;}
+  b.paid=true;b.paidDate=date;
+  try{persist();refresh();lockForBackup("Bill marked as paid. Download a fresh backup before continuing.");}catch(e){b.paid=false;b.paidDate="";alert("Could not save bill status.");}
+ });
+ document.querySelectorAll("[data-bill-unpay]").forEach(btn=>btn.onclick=()=>{
+  const b=data.bills.find(x=>x.id===btn.dataset.billUnpay);if(!b||!confirm("Change this bill back to unpaid?"))return;
+  b.paid=false;b.paidDate="";
+  try{persist();refresh();lockForBackup("Bill payment status changed. Download a fresh backup before continuing.");}catch(e){alert("Could not save bill status.");}
+ });
+ document.querySelectorAll("[data-bill-delete]").forEach(btn=>btn.onclick=()=>{
+  if(!confirm("Delete this bill record?"))return;
+  data.bills=data.bills.filter(x=>x.id!==btn.dataset.billDelete);
+  try{persist();refresh();lockForBackup("Bill record deleted. Download a fresh backup before continuing.");}catch(e){alert("Could not delete bill.");}
+ });
+ refreshBillCards();
+}
+$("billMonth").value=iso(new Date()).slice(0,7);
+$("billStatementDate").value=iso(new Date());
+$("billDueDate").value=iso(new Date());
+$("clearBill").onclick=()=>{$("billForm").reset();$("billMonth").value=iso(new Date()).slice(0,7);};
+$("billForm").onsubmit=e=>{
+ e.preventDefault();
+ const cardId=$("billCard").value,amount=Number($("billAmount").value),billMonth=$("billMonth").value,statementDate=$("billStatementDate").value,dueDate=$("billDueDate").value;
+ if(!data.cards.some(c=>c.id===cardId)){alert("Select a card.");return;}
+ if(!billMonth||!statementDate||!dueDate||!Number.isFinite(amount)||amount<=0){alert("Enter valid bill details.");return;}
+ if(dueDate<statementDate){alert("Due date cannot be before statement date.");return;}
+ if(data.bills.some(b=>b.cardId===cardId&&b.billMonth===billMonth)){if(!confirm("A bill for this card and month already exists. Add another record anyway?"))return;}
+ const bill={id:"bill-"+Date.now(),cardId,billMonth,statementDate,dueDate,amount,paid:false,paidDate:""};
+ data.bills.push(bill);
+ try{persist();$("billForm").reset();$("billMonth").value=iso(new Date()).slice(0,7);$("billStatementDate").value=iso(new Date());$("billDueDate").value=iso(new Date());refresh();lockForBackup("Credit card bill saved as payment pending. Download a fresh backup before continuing.");}
+ catch(err){data.bills=data.bills.filter(b=>b.id!==bill.id);alert("Could not save bill locally.");}
+};
+
 $("cardForm").onsubmit=e=>{
  e.preventDefault();
  const name=$("name").value.trim(),from=+$("fromDay").value,to=+$("toDay").value,from2=$("fromDay2").value?+$("fromDay2").value:"",to2=$("toDay2").value?+$("toDay2").value:"";
  if(!name){alert("Enter a card name.");return;}
  if(from<1||to>31||from>to||((from2||to2)&&(!from2||!to2||from2<1||to2>31||from2>to2))){alert("Enter valid recommendation day ranges from 1 to 31.");return;}
- const id=$("editId").value||"card-"+Date.now(),c={id,name,bank:$("bank").value.trim(),network:$("network").value,cycle:$("cycle").value,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=data.cards.some(x=>x.id===id);
+ const id=$("editId").value||"card-"+Date.now(),c={id,name,bank:$("bank").value.trim(),network:$("network").value,cycle:$("cycle").value,creditLimit:Number($("creditLimit").value)||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=data.cards.some(x=>x.id===id);
  if(!confirm((exists?"Confirm updates to ":"Add ")+name+"? This will save the information on this device."))return;
  if(exists)data.cards=data.cards.map(x=>x.id===id?c:x);else data.cards.push(c);
  try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}
