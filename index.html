@@ -137,10 +137,9 @@ details summary{font-size:13px;color:#334963}
 <label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
 <label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
-<label>Billing cycle date<input id="cycle" type="number" min="1" max="31" placeholder="Day of month"></label>
 <label>Credit limit (₹)<input id="creditLimit" type="number" min="0" step="0.01" placeholder="e.g. 100000"></label>
-<label>Statement date<input id="statement" type="number" min="1" max="31" placeholder="Optional"></label>
-<label>Payment due date<input id="due" type="number" min="1" max="31" placeholder="Optional"></label>
+<label>Statement generation day<input id="statement" type="number" min="1" max="31" placeholder="Day of month"></label>
+<label>Payment due day<input id="due" type="number" min="1" max="31" placeholder="Day of month"></label>
 <label class="full">Offers / cashback<textarea id="offers" rows="2" placeholder="e.g. 5% on dining, movie offers"></textarea></label>
 <label class="full">Usage notes<textarea id="notes" rows="2" placeholder="Conditions or reminders"></textarea></label>
 <div class="full"><div class="kicker">Payment categories</div><div class="checkrow"><label><input type="checkbox" id="upi"> UPI</label><label><input type="checkbox" id="nonupi"> Non-UPI</label></div></div>
@@ -279,7 +278,7 @@ try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
 function persist(){data.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">Bill generation day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;}
+function cardHTML(c){return `<article class="cardrow"><div class="cardname">${esc(c.name)}</div><div class="meta">Statement generation day: ${c.statement?esc(c.statement):"Not set"}${c.due?` · Payment due day: ${esc(c.due)}`:""}</div>${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}</article>`;}
 function renderRecommendations(){
  const v=$("datePicker").value||iso(new Date()),p=v.split("-").map(Number),dt=new Date(p[0],p[1]-1,p[2],12),day=dt.getDate();
  $("todayText").textContent=dt.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
@@ -290,7 +289,7 @@ function renderRecommendations(){
  }
 }
 function renderCards(){
- $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Billing: ${esc(c.cycle||"—")} · Statement: ${esc(c.statement||"—")} · Due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
+ $("cardList").innerHTML=data.cards.length?data.cards.map(c=>`<article class="item"><div class="itemtop"><div><h3>${esc(c.name)}</h3><div class="muted">${esc(c.bank||"")} ${esc(c.network||"")}</div></div><div class="itemactions"><button class="secondary smallbtn" data-edit="${esc(c.id)}">Edit</button><button class="danger smallbtn" data-delete="${esc(c.id)}">Delete</button></div></div><div class="muted">Limit: ${c.creditLimit?money(c.creditLimit):"Not set"} · Statement generation: ${esc(c.statement||"—")} · Payment due: ${esc(c.due||"—")}</div><div class="offer">${esc(c.offers||"No offer details")}</div><div class="meta">Days ${esc(c.from||1)}–${esc(c.to||31)}${c.from2&&c.to2?` and ${esc(c.from2)}–${esc(c.to2)}`:""} · ${[c.upi?"UPI":"",c.nonupi?"Non-UPI":""].filter(Boolean).join(" / ")||"No category selected"}</div></article>`).join(""):'<div class="empty">No cards added.</div>';
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>edit(b.dataset.edit));
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>del(b.dataset.delete));
 }
@@ -298,7 +297,7 @@ function refresh(){renderRecommendations();renderCards();renderExpenses();render
 function clearForm(){$("cardForm").reset();$("editId").value="";$("fromDay").value=1;$("toDay").value=31;$("fromDay2").value="";$("toDay2").value="";$("formHeading").textContent="Add a card";$("saveCard").textContent="Save card details";}
 function edit(id){
  const c=data.cards.find(x=>x.id===id);if(!c)return;
- for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,cycle:c.cycle,creditLimit:c.creditLimit||"",statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
+ for(const [field,val] of Object.entries({editId:c.id,name:c.name,bank:c.bank,network:c.network,creditLimit:c.creditLimit||"",statement:c.statement,due:c.due,offers:c.offers,notes:c.notes,fromDay:c.from||1,toDay:c.to||31,fromDay2:c.from2||"",toDay2:c.to2||""}))$(field).value=val??"";
  $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("cardForm").scrollIntoView({behavior:"smooth"});
 }
 function downloadBackup(){
@@ -472,7 +471,7 @@ $("cardForm").onsubmit=e=>{
  const name=$("name").value.trim(),from=+$("fromDay").value,to=+$("toDay").value,from2=$("fromDay2").value?+$("fromDay2").value:"",to2=$("toDay2").value?+$("toDay2").value:"";
  if(!name){alert("Enter a card name.");return;}
  if(from<1||to>31||from>to||((from2||to2)&&(!from2||!to2||from2<1||to2>31||from2>to2))){alert("Enter valid recommendation day ranges from 1 to 31.");return;}
- const id=$("editId").value||"card-"+Date.now(),c={id,name,bank:$("bank").value.trim(),network:$("network").value,cycle:$("cycle").value,creditLimit:Number($("creditLimit").value)||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=data.cards.some(x=>x.id===id);
+ const id=$("editId").value||"card-"+Date.now(),existingCard=data.cards.find(x=>x.id===id),c={...(existingCard||{}),id,name,bank:$("bank").value.trim(),network:$("network").value,creditLimit:Number($("creditLimit").value)||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=!!existingCard;
  if(!confirm((exists?"Confirm updates to ":"Add ")+name+"? This will save the information on this device."))return;
  if(exists)data.cards=data.cards.map(x=>x.id===id?c:x);else data.cards.push(c);
  try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}

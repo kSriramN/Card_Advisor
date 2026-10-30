@@ -93,3 +93,6 @@ CARDWISE V10 — FIX SMART SUGGESTION BILLING DETAILS
 - Existing offers remain visible below the billing details.
 - No data migration; existing localStorage data and backup/restore remain unchanged.
 - Service worker cache version: cardwise-manager-v10.
+
+
+Version 11 update: Card editor now has only Statement generation day and Payment due day. The legacy billing-cycle value is retained internally when editing existing cards for compatibility, but is no longer shown as a separate field. Smart Suggestions uses the Statement generation day. Backup remains optional: changes save locally, the reminder appears after 10 changes by default, and reminders can be disabled in Settings. No mandatory backup gate is used.
