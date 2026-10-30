@@ -32,12 +32,97 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
 .txn{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
 .txn:first-child{border-top:0}.txn small{display:block;color:var(--muted)}
 @media(max-width:430px){.statgrid{grid-template-columns:1fr 1fr}.chartrow{grid-template-columns:82px 1fr 75px;font-size:11px}.stat strong{font-size:16px}}
+
+/* CardWise v7 — minimal light app shell */
+:root{
+ --bg:#f7f9fc;--surface:#ffffff;--ink:#172b4d;--muted:#718096;--line:#e6ebf1;
+ --blue:#167d65;--bluebg:#edf7f3;--green:#16845b;--red:#b54747;
+ --shadow:0 5px 20px rgba(23,43,77,.045);
+}
+html{background:var(--bg);scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top) 16px calc(94px + env(safe-area-inset-bottom))}
+main{max-width:760px;margin:0 auto}
+.app-header{padding:20px 2px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brandmark{display:flex;align-items:center;gap:11px}
+.brand-icon{width:39px;height:39px;border-radius:13px;background:#e8f4ef;color:#167d65;display:grid;place-items:center;font-weight:900;font-size:21px}
+.brand{font-size:22px;font-weight:850;letter-spacing:-.8px;line-height:1.1}
+.tagline{font-size:11px;color:var(--muted);margin-top:3px}
+.app-nav{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(720px,calc(100% - 24px));display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:7px;background:rgba(255,255,255,.96);border:1px solid #e7ecf2;border-radius:19px;box-shadow:0 8px 30px rgba(23,43,77,.12);backdrop-filter:blur(16px)}
+.nav-btn{background:transparent;color:#8995a5;border:0;border-radius:13px;padding:7px 3px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:600;min-height:51px}
+.nav-btn span{font-size:19px;line-height:1.1}.nav-btn small{font-size:10px;letter-spacing:.1px}
+.nav-btn.active{background:#edf7f3;color:#167d65}
+.view{display:none;animation:fadein .16s ease-out}.view.active{display:block}
+@keyframes fadein{from{opacity:.65;transform:translateY(3px)}to{opacity:1;transform:none}}
+.welcome{padding:17px 3px 7px}.welcome h1,.view-heading h1{font-size:27px;line-height:1.16;letter-spacing:-1px;margin:6px 0 5px;font-weight:800}
+.welcome p,.view-heading p{font-size:13px;color:var(--muted);margin:0}
+.view-heading{padding:17px 3px 7px}
+.kicker{font-size:10px;letter-spacing:1.15px;color:#8491a2;font-weight:800}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:17px;margin:12px 0;box-shadow:var(--shadow)}
+h2{font-size:17px;letter-spacing:-.25px;margin:0 0 12px}
+h3{font-size:14px}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-heading h2{margin:4px 0 0}
+.soft-pill{font-size:10px;font-weight:750;color:#167d65;background:#edf7f3;padding:6px 10px;border-radius:99px}
+button{border-radius:11px;background:#167d65;padding:10px 14px;font-size:13px;font-weight:750;transition:transform .12s,background .12s}
+button:active{transform:scale(.98)}
+.secondary{background:#f1f4f7;color:#40536b}
+.danger{background:#fff4f3;color:#b54747;border:1px solid #f5d9d6}
+.smallbtn{font-size:11px;padding:7px 10px}
+input,select,textarea{border:1px solid #dce3eb;border-radius:11px;background:#fff;color:var(--ink);font-size:14px;min-height:44px}
+input:focus,select:focus,textarea:focus{outline:3px solid rgba(22,125,101,.12);border-color:#70b69e}
+label{font-size:11px;color:#52647a;font-weight:700}
+.group{border:1px solid var(--line);border-radius:14px;margin:9px 0;overflow:hidden}
+.grouphead{background:#f3f7f6;color:#477365;padding:9px 12px;font-size:10px;letter-spacing:.8px}
+.cardrow{padding:13px 14px;border-color:var(--line)}
+.cardname{font-size:15px}
+.offer{color:#68798d;font-size:12px;line-height:1.5}
+.item{border:1px solid var(--line);border-radius:14px;padding:13px;margin:9px 0;box-shadow:0 2px 8px rgba(23,43,77,.025)}
+.itemtop{align-items:center}
+.meta,.muted{color:var(--muted)}
+.stat{background:#f8fafc;border:1px solid var(--line);border-radius:13px;padding:12px}
+.stat span{font-size:10px;color:var(--muted);font-weight:650}
+.stat strong{font-size:17px;color:var(--ink);letter-spacing:-.3px}
+.bartrack,.utiltrack{background:#edf1f5}
+.barfill,.utilfill{background:#2b9b79}
+.txn{padding:13px 2px;border-color:var(--line)}
+.notice{background:#fff9ec;border:1px solid #f4e7c7;color:#80652d;border-radius:12px}
+.success{background:#edf8f1;border:1px solid #d1eadb;color:#24764e}
+.backupbar label{background:#f1f4f7;color:#40536b;border-radius:11px}
+details summary{font-size:13px;color:#334963}
+.foot{padding:20px 4px 8px;color:#98a3b1}
+.gate{backdrop-filter:blur(5px)}
+.gatebox{border:1px solid var(--line);box-shadow:0 18px 70px rgba(23,43,77,.2)}
+@media(min-width:720px){
+ body{padding-bottom:35px}
+ .app-nav{position:sticky;top:8px;bottom:auto;left:auto;transform:none;width:100%;margin:5px auto 17px;border-radius:14px;box-shadow:0 3px 14px rgba(23,43,77,.06)}
+ .nav-btn{flex-direction:row;gap:7px;min-height:40px;padding:8px}
+ .nav-btn span{font-size:15px}.nav-btn small{font-size:12px}
+}
+@media(max-width:430px){
+ body{padding-left:12px;padding-right:12px}
+ .welcome h1,.view-heading h1{font-size:25px}
+ .panel{padding:14px;border-radius:16px}
+ .app-header{padding-top:16px}
+}
+
 </style></head><body><main>
-<header><div><div class="brand">CardWise</div><div class="tagline">Your cards. Your offers. Better daily choices.</div></div><button class="secondary smallbtn" id="backupTop">Backup</button></header>
-<section class="panel datebox"><div><div class="kicker">Today's recommendations</div><div class="today" id="todayText">Loading date…</div><div class="period" id="periodText"></div></div><label style="max-width:155px">Preview date<input type="date" id="datePicker"></label></section>
-<section class="panel"><h2>Recommended cards</h2><div class="group"><div class="grouphead">UPI</div><div id="upiList"></div></div><div class="group"><div class="grouphead">NON-UPI</div><div id="nonupiList"></div></div></section>
-<section class="panel"><div class="itemtop"><h2 style="margin:0">My cards</h2><button id="addCard">+ Add card</button></div><div id="cardList"></div></section>
-<section class="panel"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
+<header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand">CardWise</div><div class="tagline">Your cards, clearly organised.</div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
+<nav class="app-nav" aria-label="Main navigation">
+  <button class="nav-btn active" data-target="home" type="button"><span>⌂</span><small>Home</small></button>
+  <button class="nav-btn" data-target="cards" type="button"><span>▣</span><small>Cards</small></button>
+  <button class="nav-btn" data-target="activity" type="button"><span>↗</span><small>Activity</small></button>
+  <button class="nav-btn" data-target="bills" type="button"><span>▤</span><small>Bills</small></button>
+  <button class="nav-btn" data-target="settings" type="button"><span>⚙</span><small>Settings</small></button>
+</nav>
+<div class="view active" id="view-home">
+  <div class="welcome"><div class="kicker">YOUR CARD OVERVIEW</div><h1>Make every payment count.</h1><p>Simple recommendations for the way you pay today.</p></div>
+  <section class="panel datebox"><div><div class="kicker">Today's recommendations</div><div class="today" id="todayText">Loading date…</div><div class="period" id="periodText"></div></div><label style="max-width:155px">Preview date<input type="date" id="datePicker"></label></section>
+  <section class="panel"><div class="section-heading"><div><div class="kicker">SMART SUGGESTIONS</div><h2>Recommended cards</h2></div><span class="soft-pill">Today</span></div><div class="group"><div class="grouphead">UPI</div><div id="upiList"></div></div><div class="group"><div class="grouphead">NON-UPI</div><div id="nonupiList"></div></div></section>
+</div>
+<div class="view" id="view-cards">
+  <div class="view-heading"><div class="kicker">YOUR WALLET</div><h1>My cards</h1><p>Manage card details, limits and offers.</p></div>
+  <section class="panel"><div class="itemtop"><h2 style="margin:0">Saved cards</h2><button id="addCard">+ Add card</button></div><div id="cardList"></div></section>
+  <section class="panel"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
 <label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
 <label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
@@ -54,7 +139,10 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
 <label>Optional second range – through<input id="toDay2" type="number" min="1" max="31" placeholder="Optional"></label>
 </div><div class="notice">Do not enter PINs, CVVs or full card numbers. CardWise does not store them.</div><div class="toolbar"><button type="submit" id="saveCard">Save card details</button><button type="button" class="secondary" id="cancelEdit">Clear form</button></div></form><div class="success" id="saveStatus"></div></section>
 
-<section class="panel" id="expenseTracker">
+</div>
+<div class="view" id="view-activity">
+ <div class="view-heading"><div class="kicker">SPENDING OVERVIEW</div><h1>Activity</h1><p>Track purchases, payments and credit usage.</p></div>
+ <section class="panel" id="expenseTracker">
  <div class="itemtop"><h2 style="margin:0">Expenses & credit usage</h2><span class="period">Local tracker</span></div>
  <p class="muted">Record purchases, card payments and refunds. Outstanding = purchases − payments − refunds.</p>
  <div class="statgrid" id="expenseStats"></div>
@@ -77,7 +165,10 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
  <h3 style="margin:16px 0 8px">Transaction history</h3><div id="transactionList"></div>
 </section>
 
-<section class="panel" id="billTracker">
+</div>
+<div class="view" id="view-bills">
+ <div class="view-heading"><div class="kicker">PAYMENT CENTRE</div><h1>Credit card bills</h1><p>Keep due dates and payments in one place.</p></div>
+ <section class="panel" id="billTracker">
  <div class="itemtop"><h2 style="margin:0">Credit card bills</h2><span class="period">Payment tracker</span></div>
  <p class="muted">Enter the statement amount when your bank generates a bill. Mark it paid after you make the payment.</p>
  <div class="statgrid" id="billStats"></div>
@@ -96,9 +187,13 @@ details summary{font-weight:800;cursor:pointer}.month-row{padding:10px 0;border-
  </details>
  <h3 style="margin:16px 0 8px">Bill payment status</h3><div id="billList"></div>
 </section>
-<section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div></section>
+</div>
+<div class="view" id="view-settings">
+ <div class="view-heading"><div class="kicker">PREFERENCES & DATA</div><h1>Settings</h1><p>Your data stays on this device.</p></div>
+ <section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div></section>
 <section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
-<div class="foot">Local storage only. No cloud sync. No PINs, CVVs or full card numbers are stored.</div>
+<div class="foot">Local storage only · No cloud sync · No PINs, CVVs or full card numbers stored.</div>
+</div>
 </main>
 <div class="gate" id="backupGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="gatebox">
@@ -140,6 +235,15 @@ const seed=[
 {id:"c8",name:"ICICI Amazon Pay",bank:"ICICI",network:"Visa",cycle:12,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:15,to:20}
 ];
 const $=id=>document.getElementById(id);
+
+// App navigation: each destination is a focused screen instead of one long page.
+function showView(name){
+ document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.target===name));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.target)));
+
 let storageProblem=false, firstInstall=false;
 let data;
 try{

@@ -51,3 +51,16 @@ BILL PAYMENT TRACKER (v6)
 - Bill creation, status changes and deletion trigger the mandatory backup gate.
 - Bill records are included in JSON backups. Existing v5 backups without bills remain restorable.
 - CardWise does not automatically fetch statements or confirm payments with banks; the user records bill amounts and marks payment after paying.
+
+
+CARDWISE V7 — MINIMAL LIGHT UI
+- Redesigned as a focused app with Home, Cards, Activity, Bills and Settings screens.
+- Mobile bottom navigation; desktop navigation adapts to a top bar.
+- Existing functionality and element IDs retained.
+- Existing localStorage key cardwise-user-data-v2 is unchanged.
+- Backup format and restore compatibility are unchanged.
+- Service worker cache version: cardwise-manager-v7.
+
+Deploy by replacing the existing GitHub Pages files with these files.
+After deployment, refresh the app. If an older version remains, close and reopen it
+or clear the site's cached data. Existing local data remains in the same browser.
