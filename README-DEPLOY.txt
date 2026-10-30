@@ -64,3 +64,24 @@ CARDWISE V7 — MINIMAL LIGHT UI
 Deploy by replacing the existing GitHub Pages files with these files.
 After deployment, refresh the app. If an older version remains, close and reopen it
 or clear the site's cached data. Existing local data remains in the same browser.
+
+
+CARDWISE V8 — OPTIONAL BACKUP REMINDERS
+- CardWise no longer blocks after card, transaction or bill changes.
+- Changes continue to save automatically in this browser/device.
+- Optional backup reminders are enabled by default and appear after 10 changes.
+- Reminder preference is available in Settings and can be switched off.
+- Download backup remains available from the header and Settings.
+- A successful backup resets the change counter.
+- Restore remains available in Settings; empty-data recovery screen remains intact.
+- Existing localStorage key cardwise-user-data-v2 is unchanged.
+- Service worker cache version: cardwise-manager-v8.
+
+
+CARDWISE V9 — RECOMMENDATION BILL GENERATION DAY
+- Home screen smart card recommendations now show the configured statement/bill generation day.
+- Payment due day is shown alongside it when configured.
+- Card offers remain visible below the dates.
+- Uses the existing card.statement and card.due fields; no data migration required.
+- Existing localStorage key and backup/restore behaviour are unchanged.
+- Service worker cache version: cardwise-manager-v9.

@@ -105,6 +105,17 @@ details summary{font-size:13px;color:#334963}
  .app-header{padding-top:16px}
 }
 
+
+.reminder-setting{margin-top:14px;padding:13px;background:#f8fafc;border:1px solid var(--line);border-radius:13px}
+.toggle-label{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink);font-weight:700}
+.toggle-label input{width:18px;height:18px;min-height:0;accent-color:#167d65}
+.reminder-setting p{font-size:11px;line-height:1.5;margin:7px 0 0 27px}
+.backup-toast{position:fixed;z-index:80;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(520px,calc(100% - 24px));display:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 12px 38px rgba(23,43,77,.18)}
+.backup-toast.show{display:block}
+.backup-toast strong{font-size:13px}.backup-toast p{font-size:11px;color:var(--muted);margin:4px 0 10px}
+.backup-toast-actions{display:flex;gap:8px}.backup-toast-actions button{flex:1}
+@media(min-width:720px){.backup-toast{bottom:20px}}
+
 </style></head><body><main>
 <header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand">CardWise</div><div class="tagline">Your cards, clearly organised.</div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
 <nav class="app-nav" aria-label="Main navigation">
@@ -190,7 +201,9 @@ details summary{font-size:13px;color:#334963}
 </div>
 <div class="view" id="view-settings">
  <div class="view-heading"><div class="kicker">PREFERENCES & DATA</div><h1>Settings</h1><p>Your data stays on this device.</p></div>
- <section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div></section>
+ <section class="panel"><h2>Backup & restore</h2><p class="muted">Confirmed changes are saved in this browser on this device. Download a backup to recover them if browser data is cleared or you change phones.</p><div class="backupbar"><button id="exportBtn">Download backup</button><label>Restore backup<input id="importFile" type="file" accept=".json,application/json"></label></div><div class="notice">Save the downloaded JSON file in iPhone Files or Android Downloads. Make a fresh backup after important edits.</div><div class="muted" id="backupInfo"></div>
+<div class="reminder-setting"><label class="toggle-label"><input type="checkbox" id="backupReminderToggle" checked> Remind me to back up occasionally</label><p class="muted">CardWise saves changes automatically on this device. A reminder appears after 10 changes. You can always back up manually.</p></div>
+</section>
 <section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
 <div class="foot">Local storage only · No cloud sync · No PINs, CVVs or full card numbers stored.</div>
 </div>
@@ -220,6 +233,10 @@ details summary{font-size:13px;color:#334963}
     <div class="gate-status" id="restoreStatus" aria-live="polite"></div>
     <div class="gatehint">If you have not created a backup before, you can close this page and restore data later when you locate the backup file. The dashboard stays locked until cards are restored.</div>
   </div>
+</div>
+<div class="backup-toast" id="backupToast" role="status" aria-live="polite">
+ <div><strong>Keep your data protected</strong><p id="backupToastMessage">You've made several changes since your last backup.</p></div>
+ <div class="backup-toast-actions"><button type="button" id="backupToastNow">Back up now</button><button type="button" class="secondary" id="backupToastLater">Later</button></div>
 </div>
 <script>
 (()=>{"use strict";
@@ -288,14 +305,28 @@ function downloadBackup(){
  const obj={app:"CardWise",formatVersion:3,exportedAt:new Date().toISOString(),cards:data.cards,transactions:data.transactions||[],bills:data.bills||[]};
  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=url;a.download="CardWise-backup-"+iso(new Date())+".json";document.body.appendChild(a);a.click();a.remove();
+ try{localStorage.setItem(CHANGE_COUNT_KEY,"0");localStorage.removeItem(GATE_KEY);$("backupToast").classList.remove("show");}catch(e){}
  setTimeout(()=>URL.revokeObjectURL(url),3000);
  return true;
 }
+const REMINDER_KEY="cardwise-backup-reminders-v1", CHANGE_COUNT_KEY="cardwise-changes-since-backup-v1";
+function remindersEnabled(){try{return localStorage.getItem(REMINDER_KEY)!=="off";}catch(e){return true;}}
+function updateReminderControl(){
+ const el=$("backupReminderToggle");if(el)el.checked=remindersEnabled();
+}
+function showBackupToast(message){
+ if(!remindersEnabled())return;
+ $("backupToastMessage").textContent=message||"You've made several changes since your last backup.";
+ $("backupToast").classList.add("show");
+}
 function lockForBackup(message){
- try{localStorage.setItem(GATE_KEY,"1");}catch(e){}
- $("backupGate").classList.add("show");$("gateTitle").textContent="Back up your CardWise data";
- $("gateMessage").textContent=message||"Your latest card changes are saved on this device. Download a fresh backup before continuing.";
- $("gateAcknowledge").disabled=true;$("gateStatus").textContent="";$("gateDownload").disabled=false;
+ // Kept as a compatibility hook for existing save handlers; it no longer blocks the app.
+ try{
+  localStorage.removeItem(GATE_KEY);
+  const count=(Number(localStorage.getItem(CHANGE_COUNT_KEY))||0)+1;
+  localStorage.setItem(CHANGE_COUNT_KEY,String(count));
+  if(count>=10&&remindersEnabled())showBackupToast("You've made 10 or more changes since your last backup.");
+ }catch(e){}
 }
 function unlockAfterBackup(){
  try{localStorage.removeItem(GATE_KEY);}catch(e){}
@@ -318,7 +349,7 @@ async function restoreFile(file, fromGate){
   if(fromGate&&!confirm("Restore "+cards.length+" cards from this backup?"))return;
   data={version:3,cards,transactions:Array.isArray(x.transactions)?x.transactions:[],bills:Array.isArray(x.bills)?x.bills:[],updatedAt:new Date().toISOString()};persist();clearForm();refresh();
   $("restoreGate").classList.remove("show");
-  lockForBackup("Your backup has been restored. Download a fresh copy of the restored CardWise data before continuing.");
+  try{localStorage.setItem(CHANGE_COUNT_KEY,"0");}catch(e){}
  }catch(err){(fromGate?$("restoreStatus"):null).textContent=err.message;if(!fromGate)alert("Restore failed: "+err.message);}
 }
 function del(id){
@@ -452,6 +483,10 @@ $("cancelEdit").onclick=clearForm;
 $("datePicker").value=iso(new Date());$("datePicker").onchange=renderRecommendations;$("datePicker").oninput=renderRecommendations;
 $("exportBtn").onclick=()=>downloadBackup();
 $("backupTop").onclick=()=>downloadBackup();
+$("backupReminderToggle").onchange=e=>{try{localStorage.setItem(REMINDER_KEY,e.target.checked?"on":"off");if(!e.target.checked)$("backupToast").classList.remove("show");}catch(err){}};
+$("backupToastNow").onclick=()=>{showView("settings");downloadBackup();};
+$("backupToastLater").onclick=()=>{try{localStorage.setItem(CHANGE_COUNT_KEY,"0");}catch(e){}$("backupToast").classList.remove("show");};
+updateReminderControl();
 $("gateDownload").onclick=()=>{
  try{downloadBackup();$("gateAcknowledge").disabled=false;$("gateStatus").textContent="Backup download requested. Check Files / Downloads, then tap OK to continue.";}
  catch(e){$("gateStatus").textContent="Download could not be started. Try again or use a different browser.";}
@@ -463,12 +498,12 @@ $("gateAcknowledge").onclick=()=>{
 };
 $("importFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,false);e.target.value="";};
 $("restoreGateFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,true);e.target.value="";};
-$("startFresh").onclick=()=>{if(confirm("Start with an empty card list? You can add cards manually. A backup will be required after your first change."))$("restoreGate").classList.remove("show");};
+$("startFresh").onclick=()=>{if(confirm("Start with an empty card list? You can add cards manually. You can create a backup any time from Settings."))$("restoreGate").classList.remove("show");};
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 refresh();
+try{localStorage.removeItem(GATE_KEY);}catch(e){}
+updateReminderControl();
 if(storageProblem)showRestoreGate();
-else if(localStorage.getItem(GATE_KEY)==="1")lockForBackup("A backup was still pending when CardWise was last closed. Download and acknowledge the latest backup to continue.");
 else if(data.cards.length===0)showRestoreGate();
-else if(firstInstall)lockForBackup("Your CardWise starter card list is ready and saved on this device. Create your first backup before continuing.");
 })();
 </script></body></html>
