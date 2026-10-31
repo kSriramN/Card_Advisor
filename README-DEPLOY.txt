@@ -128,3 +128,9 @@ CARDWISE v21 · FRESH
 - Shows an "Update now" bar when a newer version is on the server.
 - Service worker bypasses the browser HTTP cache and the page reloads once when a new service worker takes over.
 - fresh-cache.js is the reusable version for other PWAs (see header comments).
+
+
+CARDWISE v22 · THEMES
+- Header: wallet icon, CardWise and version on every tab; greeting shown on Home only.
+- Settings > Theme: Teal, Ocean, Indigo, Plum, Sunset, Graphite. Applies instantly, saved on the device and in backups.
+- icon.svg redrawn as a wallet (iPhone refreshes a home-screen icon only when the app is re-added).
