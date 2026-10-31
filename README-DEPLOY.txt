@@ -106,3 +106,9 @@ CARDWISE v18 ADDITIONS
 - Issuer rewards/check and redemption guide links are provided where known. Cashback-style products should be tracked according to their own reward model; no bank login or API integration is used.
 - Bulk Add Cards accepts structured text copied from an OCR/AI tool. The parser runs locally. The editable review lets users change card name, network and statement day, remove rows, and validate duplicates/dates before saving.
 - Backup/restore includes reward batches and reward history. The existing localStorage key cardwise-user-data-v2 is unchanged.
+
+
+CARDWISE v19 · DECLUTTER
+- Version label shown under the brand and in Settings > About, with a Check for update button.
+- Removed filler text; compact Home with date picker and UPI/Non-UPI tabs; stacked wallet on Cards; charts on Activity; full-page sheets (+ button) for adding transactions, bills and cards; more collapsibles.
+- Service worker is now network-first so updates arrive reliably. Cache: cardwise-manager-v19. Data key and backup format unchanged.
