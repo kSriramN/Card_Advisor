@@ -1,4 +1,4 @@
-CARDWISE MANAGER PWA — FINAL BUILD
+CARDWISE MANAGER PWA — v18 BUILD
 
 Files:
 - index.html
@@ -13,12 +13,11 @@ Deploy:
 4. Open the published HTTPS GitHub Pages URL in Safari on iPhone or Chrome on Android.
 5. On iPhone, use Safari Share -> Add to Home Screen.
 
-Mandatory backup protection:
-- After adding, editing, or deleting a card, CardWise saves locally and blocks the app behind a backup screen.
-- Tap Download backup, check the downloaded JSON in Files / Downloads, then acknowledge with OK.
-- If the app detects zero cards or unreadable saved data, it blocks the dashboard and asks you to restore a CardWise JSON backup from the device.
-- After restoring, it asks you to download a fresh backup before continuing.
-- The gate remains pending if the page is closed before acknowledgement.
+Optional backup reminders:
+- CardWise saves changes automatically in this browser on this device. There is no mandatory backup gate after card, transaction or bill changes.
+- Backup reminders are enabled by default and appear after 10 changes. They can be disabled in Settings.
+- Download Backup remains available in the header and Settings. A successful backup resets the change counter.
+- Restore remains available in Settings. Older backups containing only cards are supported.
 
 Important limitations:
 - The browser cannot prove that a downloaded file was permanently saved or copied elsewhere. The OK step is a user acknowledgement after the download is initiated.
@@ -29,7 +28,7 @@ Important limitations:
 
 For an update, replace the four files and keep the same browser/site data. Do not clear website data. Cache version has been incremented to refresh the app shell.
 
-- If no backup is available, the zero-card screen also offers an explicit 'Start with no cards' option so the user can add cards manually; the next card change triggers the mandatory backup gate.
+- If no backup is available, the zero-card screen offers an explicit 'Start with no cards' option so the user can add cards manually.
 
 
 EXPENSE TRACKER / CREDIT UTILISATION (v5)
@@ -99,3 +98,11 @@ Version 11 update: Card editor now has only Statement generation day and Payment
 
 
 CardWise v13 update: Home recommendations now show the number of days until each card's next statement generation date and sort cards from the longest time remaining to the shortest. Cards without a statement generation day are shown last. The calculation follows the next calendar occurrence of each saved statement day and handles month/year boundaries. Backup remains optional: local changes save automatically, with an optional reminder after 10 changes; there is no mandatory backup gate.
+
+
+CARDWISE v18 ADDITIONS
+- Rewards are managed inside each saved card. Add points in separate batches, optionally with an individual expiry date. Record redemptions against a selected batch or adjust the tracked balance.
+- The Home page lists positive reward balances expiring within 30 days; urgency styling distinguishes 15-day and 7-day windows.
+- Issuer rewards/check and redemption guide links are provided where known. Cashback-style products should be tracked according to their own reward model; no bank login or API integration is used.
+- Bulk Add Cards accepts structured text copied from an OCR/AI tool. The parser runs locally. The editable review lets users change card name, network and statement day, remove rows, and validate duplicates/dates before saving.
+- Backup/restore includes reward batches and reward history. The existing localStorage key cardwise-user-data-v2 is unchanged.
