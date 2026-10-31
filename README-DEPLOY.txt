@@ -112,3 +112,11 @@ CARDWISE v19 · DECLUTTER
 - Version label shown under the brand and in Settings > About, with a Check for update button.
 - Removed filler text; compact Home with date picker and UPI/Non-UPI tabs; stacked wallet on Cards; charts on Activity; full-page sheets (+ button) for adding transactions, bills and cards; more collapsibles.
 - Service worker is now network-first so updates arrive reliably. Cache: cardwise-manager-v19. Data key and backup format unchanged.
+
+
+CARDWISE v20 · DASHBOARD
+- Gradient header with time-of-day greeting; name asked once on first open (editable in Settings).
+- Home: collapsed spend-vs-target summary (tap to expand: spent, target, left, most used cards), then one bordered box with date picker and recommendations.
+- Monthly target in Settings and optional per-card target in the card editor; both included in backups.
+- Amount fields show thousands separators (Indian grouping) while typing.
+- Back button on form pages is now a solid labelled button.

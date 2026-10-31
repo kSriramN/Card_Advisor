@@ -209,8 +209,27 @@ body{background:#fff}
 body.noscroll{overflow:hidden}
 .chartcard{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}.chartcard h3{margin:0 0 6px;font-size:14px}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:11px;margin-top:6px}.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+
+/* v20 Dashboard */
+.app-header{background:linear-gradient(135deg,#0d4a5a,#0f6e56);border-radius:0 0 22px 22px;padding:16px 16px 18px!important;margin:0 0 8px;color:#fff}
+.app-header .brand{background:none!important;-webkit-text-fill-color:#fff;color:#fff;font-size:20px}
+.app-header .tagline{color:rgba(255,255,255,.8)}
+.app-header .brand-icon{background:rgba(255,255,255,.18);color:#fff}
+.app-header #backupTop{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.6)}
+.sumcard{padding:12px 14px;cursor:pointer}.sumcard .bar{height:9px}
+.sumcard .bar i.ok{background:#1D9E75}.sumcard .bar i.warn{background:#d98e1a}.sumcard .bar i.bad{background:#c64040}
+.sumtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:13px}
+.chev{display:inline-block;transition:transform .2s;margin-left:6px;color:var(--muted)}.sumcard.open .chev{transform:rotate(180deg)}
+.sumstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 6px}.sumstats div{background:#f3f8f6;border-radius:10px;padding:8px;font-size:11px;color:var(--muted)}.sumstats b{display:block;font-size:14px;color:var(--ink);margin-top:2px}
+.toprow{display:grid;grid-template-columns:92px 1fr 96px;gap:8px;align-items:center;font-size:12px;margin:9px 0}.toprow span:last-child{text-align:right}
+.sumlink{color:var(--blue);font-weight:700;font-size:13px;margin-top:6px;display:inline-block}
+.datebar{flex-wrap:wrap;border:1px solid var(--line);background:#f3f8f6;border-radius:14px;padding:9px 10px;margin:0 0 10px}
+.dhint{flex-basis:100%;font-size:11px;color:var(--muted)}
+#sheetBack{width:auto;height:42px;padding:0 16px;background:#0f6e56;color:#fff;font-weight:700;font-size:16px;border-radius:12px}
+#welcome{position:fixed;inset:0;z-index:1200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+#welcome .wbox{width:100%;max-width:360px;text-align:center}#welcome h1{margin:12px 0 4px;font-size:24px}#welcome input{width:100%;margin:14px 0 10px;text-align:center;font-size:17px}
 </style></head><body><main>
-<header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand">CardWise</div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
+<header class="app-header"><div class="brandmark"><div class="brand-icon">C</div><div><div class="brand" id="greet">CardWise</div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></header>
 <nav class="app-nav" aria-label="Main navigation">
   <button class="nav-btn active" data-target="home" type="button"><span>⌂</span><small>Home</small></button>
   <button class="nav-btn" data-target="cards" type="button"><span>▣</span><small>Cards</small></button>
@@ -240,7 +259,7 @@ Statement Generation Date: 20</pre><p class="muted">Never include card numbers, 
 <label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
 <label>Network / type<select id="network"><option>Visa</option><option>RuPay</option><option>Mastercard</option><option>Amex</option><option>Other</option></select></label>
-<label>Credit limit (₹)<input id="creditLimit" type="number" min="0" step="0.01" placeholder="e.g. 100000"></label>
+<label>Credit limit (₹)<input id="creditLimit" type="number" min="0" step="0.01" placeholder="e.g. 100000"></label><label>Monthly target (₹, optional)<input id="cardTarget" data-money inputmode="decimal" placeholder="e.g. 25,000"></label>
 <label>Statement generation day<input id="statement" type="number" min="1" max="31" placeholder="Day of month"></label>
 <label>Payment due day<input id="due" type="number" min="1" max="31" placeholder="Day of month"></label>
 <label class="full">Offers / cashback<textarea id="offers" rows="2" placeholder="e.g. 5% on dining, movie offers"></textarea></label>
@@ -472,7 +491,7 @@ function edit(id){
  $("upi").checked=!!c.upi;$("nonupi").checked=!!c.nonupi;$("formHeading").textContent="Edit card";$("saveCard").textContent="Confirm card update";$("editorSummaryTitle").textContent="✎ Editing "+c.name;$("cardEditor").open=true;$("cardEditor").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function downloadBackup(){
- const obj={app:"CardWise",formatVersion:3,exportedAt:new Date().toISOString(),cards:data.cards,transactions:data.transactions||[],bills:data.bills||[],rewardTransactions:data.rewardTransactions||[],rewardsVersion:1};
+ const obj={app:"CardWise",formatVersion:3,exportedAt:new Date().toISOString(),cards:data.cards,transactions:data.transactions||[],bills:data.bills||[],rewardTransactions:data.rewardTransactions||[],rewardsVersion:1,userName:data.userName||"",monthlyTarget:Number(data.monthlyTarget)||0};
  const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=url;a.download="CardWise-backup-"+iso(new Date())+".json";document.body.appendChild(a);a.click();a.remove();
  try{localStorage.setItem(CHANGE_COUNT_KEY,"0");localStorage.removeItem(GATE_KEY);$("backupToast").classList.remove("show");}catch(e){}
@@ -517,7 +536,7 @@ async function restoreFile(file, fromGate){
   if(!cards.length)throw Error("The selected backup contains zero cards.");
   if(!fromGate&&!confirm("Restore "+cards.length+" cards? This replaces the current card list."))return;
   if(fromGate&&!confirm("Restore "+cards.length+" cards from this backup?"))return;
-  data={version:3,cards,transactions:Array.isArray(x.transactions)?x.transactions:[],bills:Array.isArray(x.bills)?x.bills:[],rewardTransactions:Array.isArray(x.rewardTransactions)?x.rewardTransactions:[],updatedAt:new Date().toISOString()};persist();clearForm();refresh();
+  data={version:3,cards,transactions:Array.isArray(x.transactions)?x.transactions:[],bills:Array.isArray(x.bills)?x.bills:[],rewardTransactions:Array.isArray(x.rewardTransactions)?x.rewardTransactions:[],userName:x.userName||data.userName||"",monthlyTarget:Number(x.monthlyTarget)||0,updatedAt:new Date().toISOString()};persist();clearForm();refresh();
   $("restoreGate").classList.remove("show");
   try{localStorage.setItem(CHANGE_COUNT_KEY,"0");}catch(e){}
  }catch(err){(fromGate?$("restoreStatus"):null).textContent=err.message;if(!fromGate)alert("Restore failed: "+err.message);}
@@ -642,7 +661,7 @@ $("cardForm").onsubmit=e=>{
  const name=$("name").value.trim(),from=+$("fromDay").value,to=+$("toDay").value,from2=$("fromDay2").value?+$("fromDay2").value:"",to2=$("toDay2").value?+$("toDay2").value:"";
  if(!name){alert("Enter a card name.");return;}
  if(from<1||from>31||to<1||to>31||((from2||to2)&&(!from2||!to2||from2<1||from2>31||to2<1||to2>31))){alert("Enter valid recommendation days from 1 to 31. The through day may be earlier than the from day to cross month-end.");return;}
- const id=$("editId").value||"card-"+Date.now(),existingCard=data.cards.find(x=>x.id===id),c={...(existingCard||{}),id,name,bank:$("bank").value.trim(),network:$("network").value,creditLimit:Number($("creditLimit").value)||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=!!existingCard;
+ const id=$("editId").value||"card-"+Date.now(),existingCard=data.cards.find(x=>x.id===id),c={...(existingCard||{}),id,name,bank:$("bank").value.trim(),network:$("network").value,creditLimit:Number($("creditLimit").value)||0,monthlyTarget:Number(String($("cardTarget").value).replace(/,/g,""))||0,statement:$("statement").value,due:$("due").value,offers:$("offers").value.trim(),notes:$("notes").value.trim(),upi:$("upi").checked,nonupi:$("nonupi").checked,from,to,from2,to2,active:true},exists=!!existingCard;
  if(!confirm((exists?"Confirm updates to ":"Add ")+name+"? This will save the information on this device."))return;
  if(exists)data.cards=data.cards.map(x=>x.id===id?c:x);else data.cards.push(c);
  try{persist();}catch(err){alert("Local saving failed. Browser storage may be unavailable or full.");return;}
@@ -684,8 +703,8 @@ $('parseBulk').onclick=()=>showBulkReview(parseBulk($('bulkText').value));$('cle
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$('backupInfo').textContent=data.updatedAt?'Last saved: '+new Date(data.updatedAt).toLocaleString():'Starter card list loaded. No edits saved yet.';}
 
 /* ===== v19 Declutter ===== */
-const APP_LABEL='v19 · Declutter';
-$('verLabel').textContent=APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
+const APP_LABEL='v20 · Dashboard';
+$('verLabel').textContent='CardWise · '+APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
 $('chkUpd').onclick=async()=>{const m=$('updMsg');m.textContent='Checking…';try{const t=await(await fetch('./index.html?'+Date.now(),{cache:'no-store'})).text();const r=t.match(/APP_LABEL='([^']+)'/);if(!r){m.textContent='Could not read server version.';return;}if(r[1]===APP_LABEL){m.textContent='You are on the latest: '+APP_LABEL;return;}m.textContent='Updating to '+r[1]+'…';for(const g of await navigator.serviceWorker.getRegistrations())await g.unregister();for(const k of await caches.keys())await caches.delete(k);location.reload();}catch(e){m.textContent='Offline or unreachable.';}};
 function fmt(n){return n>=1e5?(n/1e5).toFixed(1)+'L':n>=1e3?(n/1e3).toFixed(1)+'k':String(Math.round(n));}
 function collapse(p,title){const d=document.createElement('details'),s=document.createElement('summary');s.textContent=title;d.appendChild(s);while(p.firstChild)d.appendChild(p.firstChild);p.appendChild(d);return d;}
@@ -733,6 +752,40 @@ const ring=segs.map((s,i)=>{const len=s[1]/tot*C,e=`<circle r="${R}" cx="60" cy=
 $('actCharts').innerHTML=`<div class="chartcard"><h3>Spend, last 6 months</h3><svg viewBox="0 0 320 120" width="100%">${bars}</svg></div><div class="chartcard"><h3>Spend by category</h3>${tot?`<div style="display:flex;align-items:center;gap:12px"><svg viewBox="0 0 120 120" width="120">${ring}<text x="60" y="64" font-size="13" font-weight="700" text-anchor="middle" fill="#172538">${fmt(tot)}</text></svg><div class="legend" style="flex:1">${segs.slice(0,7).map((s,i)=>`<span><i style="background:${pal[i%7]}"></i>${esc(s[0])} ${Math.round(s[1]/tot*100)}%</span>`).join('')}</div></div>`:'<div class="empty">No spending yet.</div>'}</div>`;}
 const _re=renderExpenses;renderExpenses=function(){_re();renderCharts();$('histSum').textContent='Transaction history ('+(data.transactions||[]).length+')';};
 $('reportPeriod').onchange=()=>renderExpenses();
+
+/* ===== v20 Dashboard ===== */
+function fmtMoney(v){let s=String(v).replace(/[^\d.]/g,'');const i=s.indexOf('.');let ip=i<0?s:s.slice(0,i),dp=i<0?'':s.slice(i+1).replace(/\./g,'').slice(0,2);ip=ip.replace(/^0+(?=\d)/,'');if(!ip&&i>=0)ip='0';ip=ip?Number(ip).toLocaleString('en-IN'):'';return ip+(i>=0?'.'+dp:'');}
+function fmtAll(r){r.querySelectorAll('[data-money]').forEach(i=>{if(i.value)i.value=fmtMoney(i.value);});}
+function num(v){return Number(String(v||'').replace(/,/g,''))||0;}
+document.addEventListener('input',e=>{const t=e.target;if(!t.matches||!t.matches('[data-money]'))return;const pos=t.selectionStart,db=t.value.slice(0,pos).replace(/[^\d.]/g,'').length;t.value=fmtMoney(t.value);let c=0,q=0;while(q<t.value.length&&c<db){if(/[\d.]/.test(t.value[q]))c++;q++;}try{t.setSelectionRange(q,q);}catch(_){}});
+document.addEventListener('submit',e=>{if(e.target.querySelectorAll)e.target.querySelectorAll('[data-money]').forEach(i=>i.value=i.value.replace(/,/g,''));},true);
+document.addEventListener('submit',e=>{if(e.target.querySelectorAll)e.target.querySelectorAll('[data-money]').forEach(i=>{if(i.value)i.value=fmtMoney(i.value);});});
+['creditLimit','txnAmount','billAmount'].forEach(id=>{const i=$(id);i.type='text';i.setAttribute('inputmode','decimal');i.setAttribute('data-money','');i.removeAttribute('min');i.removeAttribute('step');});
+const _rc2=renderCards;renderCards=function(){_rc2();document.querySelectorAll('input[name=points]').forEach(i=>{i.type='text';i.setAttribute('inputmode','numeric');i.setAttribute('data-money','');});};
+const _ed2=edit;edit=function(id){_ed2(id);const c=data.cards.find(x=>x.id===id);$('cardTarget').value=c&&c.monthlyTarget?c.monthlyTarget:'';fmtAll($('cardEditor'));};
+// name + greeting
+function getName(){return data.userName||(function(){try{return localStorage.getItem('cardwise-user-name')||'';}catch(e){return '';}})();}
+function setName(n){data.userName=n;try{localStorage.setItem('cardwise-user-name',n);}catch(e){}persist();}
+function greet(){const hr=new Date().getHours(),g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening',n=getName();$('greet').textContent=n?g+', '+n:g;}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)greet();});
+if(data.cards.length&&!getName()){let sk=false;try{sk=localStorage.getItem('cardwise-name-skipped');}catch(e){}if(!sk){const w=document.createElement('div');w.id='welcome';w.innerHTML='<div class="wbox"><div class="brand-icon" style="margin:0 auto">C</div><h1>Welcome to CardWise</h1><div class="muted">What should we call you?</div><input id="nameIn" maxlength="30" placeholder="Your name"><button type="button" id="nameGo" style="width:100%">Continue</button><div class="muted" id="nameSkip" style="margin-top:12px;cursor:pointer">Skip for now</div></div>';document.body.appendChild(w);const done=()=>{w.remove();greet();};$('nameGo').onclick=()=>{const v=$('nameIn').value.trim();if(!v){$('nameIn').focus();return;}setName(v);done();};$('nameSkip').onclick=()=>{try{localStorage.setItem('cardwise-name-skipped','1');}catch(e){}done();};}}
+// settings: profile + target
+{const s=document.createElement('section');s.className='panel';s.innerHTML='<b>Profile and budget</b><div class="formgrid" style="margin-top:8px"><label>Your name<input id="setName" maxlength="30"></label><label>Monthly target (₹)<input id="setTarget" inputmode="decimal" data-money placeholder="e.g. 80,000"></label></div><div class="toolbar" style="margin-top:10px"><button type="button" id="saveProf">Save</button></div><div class="muted" id="profMsg"></div>';$('chkUpd').closest('.panel').before(s);
+$('setName').value=getName();if(data.monthlyTarget)$('setTarget').value=fmtMoney(data.monthlyTarget);
+$('saveProf').onclick=()=>{data.userName=$('setName').value.trim();try{localStorage.setItem('cardwise-user-name',data.userName);}catch(e){}data.monthlyTarget=num($('setTarget').value);persist();greet();renderSummary();$('profMsg').textContent='Saved';setTimeout(()=>$('profMsg').textContent='',2000);};}
+// home: summary, then bordered date + recommendations box
+{const sc=document.createElement('section');sc.className='panel sumcard';sc.id='sumCard';sc.innerHTML='<div class="sumtop"><span class="mut" style="font-size:13px">Spent this month</span><span><b id="sumPct"></b><span class="chev">⌄</span></span></div><div class="bar"><i id="sumFill"></i></div><div id="sumMore" hidden></div>';$('view-home').prepend(sc);sc.after($('rewardAlertsPanel'));
+sc.onclick=e=>{if(e.target.closest('[data-goset]')){showView('settings');setTimeout(()=>$('setTarget').focus(),300);return;}sc.classList.toggle('open');$('sumMore').hidden=!sc.classList.contains('open');};
+const db=document.querySelector('.datebar'),hint=document.createElement('div');hint.className='dhint';hint.textContent='Tap the date to preview another day';db.prepend(hint);
+const box=document.createElement('section');box.className='panel';db.before(box);box.append(db,document.querySelector('.seg'),$('upiList'),$('nonupiList'));}
+function renderSummary(){const k=monthKey(iso(new Date())),m={};data.cards.forEach(c=>m[c.id]=0);(data.transactions||[]).forEach(t=>{if(monthKey(t.date)!==k||!(t.cardId in m))return;const a=Number(t.amount)||0;if(t.type==='purchase')m[t.cardId]+=a;else if(t.type==='refund')m[t.cardId]-=a;});
+const rows=data.cards.map(c=>({c,v:Math.max(0,m[c.id])})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,3),total=data.cards.reduce((s,c)=>s+Math.max(0,m[c.id]),0),tg=Number(data.monthlyTarget)||0,pct=tg?total/tg*100:0,cls=pct>=100?'bad':pct>=80?'warn':'ok';
+$('sumPct').textContent=tg?Math.round(pct)+'%':'No target set';$('sumFill').className=cls;$('sumFill').style.width=tg?Math.min(100,pct)+'%':'0%';
+const mx=Math.max(1,...rows.map(r=>r.c.monthlyTarget>0?r.c.monthlyTarget:r.v));
+$('sumMore').innerHTML=`<div class="sumstats"><div>Spent<b>${money(total)}</b></div><div>Target<b>${tg?money(tg):'—'}</b></div><div>${tg&&total>tg?'Over by':'Left'}<b>${tg?money(Math.abs(tg-total)):'—'}</b></div></div>`+(rows.length?'<div class="mut" style="font-size:12px">Most used this month</div>'+rows.map(r=>{const ct=Number(r.c.monthlyTarget)||0,w=(ct?Math.min(100,r.v/ct*100):r.v/mx*100),cl=ct&&r.v>ct?'bad':'ok';return `<div class="toprow"><span>${esc(r.c.name)}</span><div class="bar"><i class="${cl}" style="width:${w}%"></i></div><span>${money(r.v)}${ct?' / '+fmt(ct):''}</span></div>`;}).join(''):'<div class="mut" style="font-size:12px;margin-top:6px">No spending recorded this month.</div>')+(tg?'':'<span class="sumlink" data-goset="1">Set a monthly target</span>');}
+const _re3=renderExpenses;renderExpenses=function(){_re3();renderSummary();};
+$('sheetBack').innerHTML='← Back';
+greet();
 refresh();
 try{localStorage.removeItem(GATE_KEY);}catch(e){}
 updateReminderControl();
