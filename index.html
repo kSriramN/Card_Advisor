@@ -362,6 +362,32 @@ Statement Generation Date: 20</pre><p class="muted">Never include card numbers, 
  <div class="backup-toast-actions"><button type="button" id="backupToastNow">Back up now</button><button type="button" class="secondary" id="backupToastLater">Later</button></div>
 </div>
 <script>
+(function(){
+var o={},sent=false;
+function css(){if(document.getElementById('fc-css'))return;var s=document.createElement('style');s.id='fc-css';
+s.textContent='.fc-bar{position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top,0px));z-index:2000;background:#172538;color:#fff;border-radius:14px;padding:11px 12px;font:13px/1.4 -apple-system,system-ui,sans-serif;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3)}.fc-bar button{width:auto;margin:0;padding:7px 11px;border:0;border-radius:9px;background:#fff;color:#172538;font:600 12px system-ui,sans-serif}.fc-bar .fc-x{background:none;color:#fff;padding:7px}.fc-ov{position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px}.fc-box{background:#fff;color:#172538;border-radius:16px;padding:18px;max-width:340px;width:100%;font:14px/1.5 -apple-system,system-ui,sans-serif}.fc-box h3{margin:0 0 6px;font-size:18px}.fc-box p{margin:0 0 8px}.fc-box button{display:block;width:100%;margin-top:8px;padding:11px;border-radius:10px;border:1px solid #ccd5df;background:#f3f6fa;color:#172538;font:600 14px system-ui,sans-serif}.fc-box .fc-go{background:#0f6e56;border-color:#0f6e56;color:#fff}#fc-msg{font-size:12px;color:#0f6e56;min-height:16px}';
+document.head.appendChild(s);}
+function bar(msg,label,fn){var old=document.getElementById('fc-bar');if(old)old.remove();css();var b=document.createElement('div');b.id='fc-bar';b.className='fc-bar';var t=document.createElement('span');t.style.flex='1';t.textContent=msg;var g=document.createElement('button');g.type='button';g.textContent=label;g.onclick=function(){b.remove();fn();};var x=document.createElement('button');x.type='button';x.textContent='✕';x.className='fc-x';x.setAttribute('aria-label','Dismiss');x.onclick=function(){b.remove();};b.appendChild(t);b.appendChild(g);b.appendChild(x);document.body.appendChild(b);}
+async function clearAll(){try{if(navigator.serviceWorker){var rs=await navigator.serviceWorker.getRegistrations();for(var i=0;i<rs.length;i++)await rs[i].unregister();}if(window.caches){var ks=await caches.keys();for(var j=0;j<ks.length;j++)await caches.delete(ks[j]);}}catch(e){}location.href=location.pathname+'?fresh='+Date.now();}
+function openDialog(){css();var ov=document.createElement('div');ov.className='fc-ov';ov.innerHTML='<div class="fc-box"><h3>Clear app cache?</h3><p>This reloads the latest version of the app. Your saved data stays on this device, but make sure you have a backup first.</p><div id="fc-msg"></div></div>';var box=ov.firstChild;
+function btn(t,c,f){var b=document.createElement('button');b.type='button';b.textContent=t;b.className=c||'';b.onclick=f;box.appendChild(b);}
+if(o.backup)btn('Download backup now','',function(){var m=ov.querySelector('#fc-msg');try{o.backup();m.textContent='Backup downloaded. Check Files or Downloads.';}catch(e){m.textContent='Backup failed. Try again.';}});
+btn("I've backed up, clear cache",'fc-go',function(){ov.remove();clearAll();});btn('Cancel','',function(){ov.remove();});document.body.appendChild(ov);}
+function remote(){return fetch((o.versionUrl||location.pathname)+'?'+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){var m=t.match(o.versionPattern||new RegExp("APP_LABEL"+"='([^']+)'"));return m?m[1]:null;});}
+function check(manual,el){if(manual&&el)el.textContent='Checking…';var p;try{p=remote();}catch(e){p=Promise.reject(e);}
+return p.then(function(v){if(!v){if(manual&&el)el.textContent='Could not read the server version.';return;}
+if(v===o.label){if(manual&&el)el.textContent='You are on the latest: '+o.label;return;}
+if(manual){if(el)el.textContent='Updating to '+v+'…';clearAll();}else bar('New version '+v+' is ready.','Update now',clearAll);}).catch(function(){if(manual&&el)el.textContent='Offline or unreachable.';});}
+function init(x){o=x||{};css();
+if(/[?&]fresh=/.test(location.search)){try{history.replaceState(null,'',location.pathname);}catch(e){}}
+else{try{var k='fc-loads:'+location.pathname,n=Date.now(),a=JSON.parse(localStorage.getItem(k)||'[]').filter(function(t){return n-t<60000;});a.push(n);localStorage.setItem(k,JSON.stringify(a));
+if(a.length>3)bar('Reloaded several times in a minute. If you still see an old version, clear the app cache in Settings.','Open settings',function(){if(o.openSettings)o.openSettings();else openDialog();});}catch(e){}}
+if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.addEventListener('controllerchange',function(){if(!sent){sent=true;location.reload();}});
+if(o.label){setTimeout(function(){check(false);},1500);var last=Date.now();document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-last>30000){last=Date.now();check(false);}});}}
+window.FreshCache={init:init,openDialog:openDialog,check:check,clearAll:clearAll};
+})();
+</script>
+<script>
 (()=>{"use strict";
 const KEY="cardwise-user-data-v2", GATE_KEY="cardwise-backup-required-v1";
 const seed=[
@@ -688,7 +714,7 @@ $("gateAcknowledge").onclick=()=>{
 $("importFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,false);e.target.value="";};
 $("restoreGateFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;await restoreFile(f,true);e.target.value="";};
 $("startFresh").onclick=()=>{if(confirm("Start with an empty card list? You can add cards manually. You can create a backup any time from Settings."))$("restoreGate").classList.remove("show");};
-if("serviceWorker"in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js",{updateViaCache:"none"}).catch(()=>{}));
 window.__renderCardsBase=renderCardsBase;
 function rewardPortal(c){const n=(c.bank||c.name||'').toLowerCase();if(n.includes('hsbc'))return ['https://www.hsbc.bank.in/credit-cards/rewards/','https://www.hsbc.bank.in/credit-cards/how-to-redeem-credit-card-reward-points/'];if(n.includes('kotak'))return ['https://kotakrewards.com/','https://www.kotak.bank.in/en/help-center/credit-card/features-and-product-details/how-can-i-redeem-credit-card-reward-points-.html'];if(n.includes('icici')&&!n.includes('amazon'))return ['https://www.icici.bank.in/personal-banking/cards/credit-card/credit-card-services/rewards','https://www.icici.bank.in/personal-banking/cards/credit-card/credit-card-services/rewards/faqs'];if(n.includes('axis'))return ['https://edgerewards.axis.bank.in/lms/','https://traveledge.axis.bank.in/'];if(n.includes('sbi'))return ['https://www.sbicard.com/en/personal/rewards.page','https://www.sbicard.com/en/faq/reward-points-redemption.page'];if(n.includes('amazon'))return ['https://www.amazon.in/gp/payment/statement','https://www.icici.bank.in/personal-banking/cards/credit-card/amazon-pay-credit-card/faqs'];if(n.includes('utkarsh')||n.includes('supermoney'))return ['https://www.utkarsh.bank.in/personal/cards/credit-card/supercard','https://super.money/'];return null;}
 function rewardBalance(c){return (c.rewardBatches||[]).reduce((n,b)=>n+Math.max(0,Number(b.remaining??b.points??0)),0);}
@@ -703,7 +729,7 @@ $('parseBulk').onclick=()=>showBulkReview(parseBulk($('bulkText').value));$('cle
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$('backupInfo').textContent=data.updatedAt?'Last saved: '+new Date(data.updatedAt).toLocaleString():'Starter card list loaded. No edits saved yet.';}
 
 /* ===== v19 Declutter ===== */
-const APP_LABEL='v20 · Dashboard';
+const APP_LABEL='v21 · Fresh';
 $('verLabel').textContent='CardWise · '+APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
 $('chkUpd').onclick=async()=>{const m=$('updMsg');m.textContent='Checking…';try{const t=await(await fetch('./index.html?'+Date.now(),{cache:'no-store'})).text();const r=t.match(/APP_LABEL='([^']+)'/);if(!r){m.textContent='Could not read server version.';return;}if(r[1]===APP_LABEL){m.textContent='You are on the latest: '+APP_LABEL;return;}m.textContent='Updating to '+r[1]+'…';for(const g of await navigator.serviceWorker.getRegistrations())await g.unregister();for(const k of await caches.keys())await caches.delete(k);location.reload();}catch(e){m.textContent='Offline or unreachable.';}};
 function fmt(n){return n>=1e5?(n/1e5).toFixed(1)+'L':n>=1e3?(n/1e3).toFixed(1)+'k':String(Math.round(n));}
@@ -786,6 +812,11 @@ $('sumMore').innerHTML=`<div class="sumstats"><div>Spent<b>${money(total)}</b></
 const _re3=renderExpenses;renderExpenses=function(){_re3();renderSummary();};
 $('sheetBack').innerHTML='← Back';
 greet();
+
+/* ===== v21 Fresh ===== */
+FreshCache.init({label:APP_LABEL,backup:downloadBackup,openSettings:()=>{showView('settings');setTimeout(()=>$('chkUpd').scrollIntoView({behavior:'smooth',block:'center'}),150);}});
+$('chkUpd').onclick=()=>FreshCache.check(true,$('updMsg'));
+{const b=document.createElement('button');b.type='button';b.id='clrCache';b.className='secondary smallbtn';b.style.marginTop='8px';b.textContent='Clear app cache';b.onclick=FreshCache.openDialog;$('updMsg').after(b);}
 refresh();
 try{localStorage.removeItem(GATE_KEY);}catch(e){}
 updateReminderControl();

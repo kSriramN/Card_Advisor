@@ -120,3 +120,11 @@ CARDWISE v20 · DASHBOARD
 - Monthly target in Settings and optional per-card target in the card editor; both included in backups.
 - Amount fields show thousands separators (Indian grouping) while typing.
 - Back button on form pages is now a solid labelled button.
+
+
+CARDWISE v21 · FRESH
+- Settings > About: Check for update, and Clear app cache (asks about backup first; keeps all saved data).
+- Warns after more than 3 loads in a minute; offers to open Settings.
+- Shows an "Update now" bar when a newer version is on the server.
+- Service worker bypasses the browser HTTP cache and the page reloads once when a new service worker takes over.
+- fresh-cache.js is the reusable version for other PWAs (see header comments).
