@@ -244,8 +244,33 @@ button{background:var(--th)}
 .swb{background:none!important;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;padding:2px;font-size:12px;font-weight:600}
 .swb i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-style:normal;font-size:19px;background:var(--c)}
 .swb.on{color:var(--ink)}.swb.on i{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--c)}.swb i::after{content:""}.swb.on i::after{content:"✓"}
+
+/* v23 Welcome */
+:root{--acc:#5EE0B4}
+html[data-theme=ocean]{--acc:#7CC4FF}
+html[data-theme=indigo]{--acc:#BDB4FF}
+html[data-theme=plum]{--acc:#FF9FC2}
+html[data-theme=sunset]{--acc:#FFC46B}
+html[data-theme=graphite]{--acc:#E6E3D6}
+.app-header .brand{letter-spacing:1.5px;font-weight:900;font-size:21px}
+.app-header .brand .b1{color:#fff;-webkit-text-fill-color:#fff}
+.app-header .brand .b2{color:var(--acc);-webkit-text-fill-color:var(--acc)}
+.fth{fill:var(--th)}.fth2{fill:var(--th2)}.fbg{fill:var(--thbg)}.fsoft{fill:var(--thsoft)}
+.rechead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 9px;font-size:16px}
+#intro{position:fixed;inset:0;z-index:1300;background:var(--bg);display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) 0 calc(18px + env(safe-area-inset-bottom,0px))}
+.obskip{align-self:flex-end;margin:0 14px;background:none!important;color:var(--muted);font-weight:700;padding:8px 10px}
+.obtrack{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}.obtrack::-webkit-scrollbar{display:none}
+.obslide{flex:0 0 100%;scroll-snap-align:center;padding:0 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow-y:auto}
+.obslide svg{width:100%;max-width:340px;height:auto;margin-bottom:18px}
+.obslide h2{margin:0 0 10px;font-size:25px;line-height:1.2}.obslide p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.55;max-width:360px}
+.obbadge{display:inline-block;background:var(--th);color:#fff;border-radius:99px;padding:5px 14px;font-weight:800;font-size:12px;letter-spacing:.8px;margin-bottom:10px}
+.oblist{list-style:none;margin:12px 0 0;padding:0;text-align:left;max-width:340px}.oblist li{display:flex;gap:9px;margin:9px 0;font-size:14.5px;line-height:1.4}.oblist li::before{content:"✓";color:var(--th);font-weight:900}
+.obdots{display:flex;justify-content:center;gap:8px;margin:14px 0}.obdots i{width:8px;height:8px;border-radius:50%;background:#cfd9d5;transition:all .2s}.obdots i.on{background:var(--th);width:24px;border-radius:5px}
+.obnav{padding:0 24px;display:flex;gap:10px}.obnav button{flex:1;padding:14px;font-size:16px;border-radius:14px}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#172538;color:#fff;border-radius:99px;padding:10px 18px;font-size:13px;font-weight:600;z-index:2200}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 </style></head><body><main>
-<header class="app-header"><div class="hrow"><div class="brandmark"><div class="brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg></div><div><div class="brand">CardWise</div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></div><div class="greetrow" id="greetRow"><span id="greet"></span></div></header>
+<header class="app-header"><div class="hrow"><div class="brandmark"><div class="brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg></div><div><div class="brand"><span class="b1">CARD</span><span class="b2">WISE</span></div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></div><div class="greetrow" id="greetRow"><span id="greet"></span></div></header>
 <nav class="app-nav" aria-label="Main navigation">
   <button class="nav-btn active" data-target="home" type="button"><span>⌂</span><small>Home</small></button>
   <button class="nav-btn" data-target="cards" type="button"><span>▣</span><small>Cards</small></button>
@@ -263,14 +288,14 @@ button{background:var(--th)}
   <div class="view-heading"><h1>My cards</h1></div>
   <section class="panel"><div class="itemtop"><h2 style="margin:0">Saved cards</h2><button id="addCard">+ Add card</button></div><div id="cardList"></div></section>
   <section class="panel" id="bulkImportPanel"><div class="itemtop"><div><h2 style="margin:3px 0 0">Bulk add cards</h2></div></div><details><summary>View the recommended paper format</summary><pre class="bulk-template">CARD 1
-Card Name: HSBC RUPAY
+Card Name: MY CARD
 Card Type: RUPAY
 Statement Generation Date: 25
 
 CARD 2
 Card Name: SBI VISA
 Card Type: VISA
-Statement Generation Date: 20</pre><p class="muted">Never include card numbers, CVV, PINs, OTPs or passwords.</p></details><label style="display:block;margin-top:12px">Paste converted text<textarea id="bulkText" rows="7" placeholder="Card Name: HSBC RUPAY&#10;Card Type: RUPAY&#10;Statement Generation Date: 25"></textarea></label><div class="toolbar"><button type="button" id="parseBulk">Review imported cards</button><button type="button" class="secondary" id="clearBulk">Clear</button></div><div id="bulkReview" class="bulk-review" hidden></div></section>
+Statement Generation Date: 20</pre><p class="muted">Never include card numbers, CVV, PINs, OTPs or passwords.</p></details><label style="display:block;margin-top:12px">Paste converted text<textarea id="bulkText" rows="7" placeholder="Card Name: MY CARD&#10;Card Type: RUPAY&#10;Statement Generation Date: 25"></textarea></label><div class="toolbar"><button type="button" id="parseBulk">Review imported cards</button><button type="button" class="secondary" id="clearBulk">Clear</button></div><div id="bulkReview" class="bulk-review" hidden></div></section>
   <section class="panel card-editor-panel"><details id="cardEditor"><summary class="editor-summary"><span><strong id="editorSummaryTitle">＋ Add or edit a card</strong><small>Open only when you want to update card details</small></span><span class="summary-chevron">⌄</span></summary><div class="editor-inner"><h2 id="formHeading">Add a card</h2><form id="cardForm"><input type="hidden" id="editId"><div class="formgrid">
 <label>Card name *<input id="name" required placeholder="e.g. HDFC Millennia"></label>
 <label>Bank<input id="bank" placeholder="e.g. HDFC Bank"></label>
@@ -343,7 +368,6 @@ Statement Generation Date: 20</pre><p class="muted">Never include card numbers, 
 <div class="reminder-setting"><label class="toggle-label"><input type="checkbox" id="backupReminderToggle" checked> Remind me to back up occasionally</label><p class="muted">CardWise saves changes automatically on this device. A reminder appears after 10 changes. You can always back up manually.</p></div></div></details>
 </section>
 <section class="panel"><div class="itemtop"><div><b>About</b><div class="muted" id="aboutVer"></div></div><button type="button" class="secondary smallbtn" id="chkUpd">Check for update</button></div><div class="muted" id="updMsg"></div></section>
-<section class="panel"><details><summary>Monthly strategy notes</summary><div class="month-row"><b>1st–14th</b><p>HSBC RuPay, Axis RuPay, SBI Visa</p></div><div class="month-row"><b>15th–20th</b><p>ICICI RuPay, Utkarsh, ICICI Amazon Pay, HSBC Visa</p></div><div class="month-row"><b>21st–25th</b><p>Kotak, SBI Visa, HSBC Visa, ICICI RuPay</p></div><div class="month-row"><b>26th–month end</b><p>UPI / either: Kotak and Axis RuPay; Non-UPI: SBI Visa</p></div></details></section>
 <div class="foot">Local storage only · No cloud sync · No PINs, CVVs or full card numbers stored.</div>
 </div>
 </main>
@@ -407,14 +431,7 @@ window.FreshCache={init:init,openDialog:openDialog,check:check,clearAll:clearAll
 (()=>{"use strict";
 const KEY="cardwise-user-data-v2", GATE_KEY="cardwise-backup-required-v1";
 const seed=[
-{id:"c1",name:"HSBC RuPay",bank:"HSBC",network:"RuPay",cycle:26,statement:"",due:"",offers:"Dining and movies",notes:"",upi:true,nonupi:false,from:1,to:14},
-{id:"c2",name:"Kotak",bank:"Kotak",network:"RuPay",cycle:21,statement:"",due:"",offers:"",notes:"",upi:true,nonupi:false,from:21,to:31},
-{id:"c3",name:"ICICI RuPay",bank:"ICICI",network:"RuPay",cycle:15,statement:"",due:"",offers:"Movies",notes:"",upi:true,nonupi:false,from:15,to:25},
-{id:"c4",name:"Axis RuPay",bank:"Axis",network:"RuPay",cycle:25,statement:"",due:"",offers:"Zomato, Blinkit and Paytm utility bills – 5% off",notes:"",upi:true,nonupi:false,from:1,to:14,from2:26,to2:31},
-{id:"c5",name:"Utkarsh",bank:"Utkarsh",network:"RuPay",cycle:1,statement:"",due:"",offers:"5% on Myntra; 2% Flipkart; 1% on UPI",notes:"",upi:true,nonupi:false,from:15,to:20},
-{id:"c6",name:"HSBC Visa",bank:"HSBC",network:"Visa",cycle:15,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:15,to:25},
-{id:"c7",name:"SBI Visa",bank:"SBI",network:"Visa",cycle:20,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:1,to:31},
-{id:"c8",name:"ICICI Amazon Pay",bank:"ICICI",network:"Visa",cycle:12,statement:"",due:"",offers:"",notes:"",upi:false,nonupi:true,from:15,to:20}
+{id:"c1",name:"Sample Card",bank:"Demo Bank",network:"Visa",cycle:15,statement:"",due:"",offers:"Sample offer: 5% off on dining",notes:"This is a sample. Edit or delete it and add your own cards.",upi:true,nonupi:true,from:1,to:31}
 ];
 const $=id=>document.getElementById(id);
 
@@ -439,8 +456,8 @@ for(const c of data.cards){if(!Array.isArray(c.rewardBatches))c.rewardBatches=[]
 }catch(e){storageProblem=true;data={version:2,cards:[],updatedAt:null};}
 // Correct the original seeded recommendation modes for existing CardWise installs.
 for(const c of data.cards){
- if(c.id==="c2"&&c.name==="Kotak")c.nonupi=false;
- if(c.id==="c4"&&c.name==="Axis RuPay")c.nonupi=false;
+ 
+ 
 }
 try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}
 function persist(){data.updatedAt=new Date().toISOString();localStorage.setItem(KEY,JSON.stringify(data));}
@@ -745,7 +762,7 @@ $('parseBulk').onclick=()=>showBulkReview(parseBulk($('bulkText').value));$('cle
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$('backupInfo').textContent=data.updatedAt?'Last saved: '+new Date(data.updatedAt).toLocaleString():'Starter card list loaded. No edits saved yet.';}
 
 /* ===== v19 Declutter ===== */
-const APP_LABEL='v22 · Themes';
+const APP_LABEL='v23 · Welcome';
 $('verLabel').textContent=APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
 $('chkUpd').onclick=async()=>{const m=$('updMsg');m.textContent='Checking…';try{const t=await(await fetch('./index.html?'+Date.now(),{cache:'no-store'})).text();const r=t.match(/APP_LABEL='([^']+)'/);if(!r){m.textContent='Could not read server version.';return;}if(r[1]===APP_LABEL){m.textContent='You are on the latest: '+APP_LABEL;return;}m.textContent='Updating to '+r[1]+'…';for(const g of await navigator.serviceWorker.getRegistrations())await g.unregister();for(const k of await caches.keys())await caches.delete(k);location.reload();}catch(e){m.textContent='Offline or unreachable.';}};
 function fmt(n){return n>=1e5?(n/1e5).toFixed(1)+'L':n>=1e3?(n/1e3).toFixed(1)+'k':String(Math.round(n));}
@@ -845,6 +862,42 @@ if(!data.theme){try{data.theme=localStorage.getItem('cardwise-theme')||'';}catch
 const _rf=refresh;refresh=function(){_rf();const cur=document.documentElement.getAttribute('data-theme')||'';if((data.theme||'')!==cur)applyTheme(data.theme||'teal',true);};
 const _sv3=showView;showView=function(n){_sv3(n);$('greetRow').hidden=n!=='home';};
 paintSwatches();
+
+/* ===== v23 Welcome ===== */
+const SVG_BEACH='<svg viewBox="0 0 320 200" role="img" aria-label="Relaxing on a beach"><rect width="320" height="200" rx="22" class="fbg"/><circle cx="262" cy="46" r="21" fill="#F7C04A"/><path d="M0 118Q40 108 80 118T160 118T240 118T320 118V150H0Z" class="fth2" opacity=".5"/><path d="M0 132Q40 122 80 132T160 132T240 132T320 132V200H0Z" class="fth2" opacity=".75"/><path d="M0 152Q120 138 320 156V200H0Z" fill="#F1DDB1"/><line x1="112" y1="66" x2="120" y2="170" stroke="#7A5A3A" stroke-width="4" stroke-linecap="round"/><path d="M56 86Q112 14 176 82Z" class="fth"/><path d="M112 28Q84 52 76 85L112 85Z" fill="#fff" opacity=".35"/><path d="M112 28Q140 52 150 84L112 85Z" fill="#fff" opacity=".18"/><path d="M128 152L200 152L230 128" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M128 152L200 152L230 128" fill="none" stroke="var(--th)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><line x1="140" y1="152" x2="136" y2="170" stroke="#7A5A3A" stroke-width="3"/><line x1="200" y1="152" x2="204" y2="170" stroke="#7A5A3A" stroke-width="3"/><line x1="142" y1="142" x2="192" y2="142" stroke="#4A6FA5" stroke-width="13" stroke-linecap="round"/><line x1="194" y1="142" x2="226" y2="123" stroke="#E8B48A" stroke-width="9" stroke-linecap="round"/><circle cx="130" cy="133" r="9" fill="#E8B48A"/><rect x="123" y="130" width="14" height="4" rx="2" fill="#222"/><path d="M121 128Q130 120 139 128Z" fill="#F7C04A"/><rect x="246" y="146" width="9" height="16" rx="2" class="fth2"/><line x1="252" y1="140" x2="256" y2="148" stroke="#e5484d" stroke-width="2"/></svg>';
+const SVG_CHART='<svg viewBox="0 0 320 200" role="img" aria-label="Charts"><rect width="320" height="200" rx="22" class="fbg"/><rect x="26" y="44" width="150" height="112" rx="14" fill="#fff"/><rect x="40" y="110" width="16" height="34" rx="4" class="fsoft"/><rect x="64" y="92" width="16" height="52" rx="4" class="fsoft"/><rect x="88" y="100" width="16" height="44" rx="4" class="fsoft"/><rect x="112" y="76" width="16" height="68" rx="4" class="fsoft"/><rect x="136" y="60" width="16" height="84" rx="4" class="fth"/><circle cx="244" cy="76" r="30" fill="none" stroke="#fff" stroke-width="16"/><circle cx="244" cy="76" r="30" fill="none" style="stroke:var(--th)" stroke-width="16" stroke-dasharray="84 105" transform="rotate(-90 244 76)"/><circle cx="244" cy="76" r="30" fill="none" style="stroke:var(--th2)" stroke-width="16" stroke-dasharray="52 137" stroke-dashoffset="-86" transform="rotate(-90 244 76)"/><rect x="196" y="128" width="100" height="28" rx="10" fill="#fff"/><rect x="206" y="138" width="60" height="8" rx="4" class="fth"/></svg>';
+const SVG_LOCK='<svg viewBox="0 0 320 200" role="img" aria-label="Secure lock"><rect width="320" height="200" rx="22" class="fbg"/><path d="M160 22L226 46V100Q226 150 160 180Q94 150 94 100V46Z" class="fth"/><path d="M160 34L214 53V100Q214 141 160 168Q106 141 106 100V53Z" fill="#fff" opacity=".12"/><rect x="138" y="94" width="44" height="36" rx="8" fill="#fff"/><path d="M146 94V84a14 14 0 0 1 28 0V94" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/><circle cx="160" cy="109" r="5" class="fth"/><rect x="157.5" y="111" width="5" height="10" rx="2.5" class="fth"/></svg>';
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function appUrl(){return location.origin+location.pathname.replace(/index\.html$/,'');}
+async function shareApp(){const url=appUrl(),text='CardWise: pick the right credit card every day. Your data never leaves your phone.';if(navigator.share){try{await navigator.share({title:'CardWise',text,url});return;}catch(e){if(e&&e.name==='AbortError')return;}}copyLink();}
+async function copyLink(){const url=appUrl();try{await navigator.clipboard.writeText(url);toast('Link copied');}catch(e){window.prompt('Copy this link',url);}}
+// Recommended cards heading
+{const box=$('upiList').closest('.panel'),r=document.createElement('div');r.className='rechead';r.innerHTML='<b>Recommended cards</b><span class="soft-pill" id="recCount"></span>';box.prepend(r);}
+function updRecCount(){const n=new Set([...document.querySelectorAll('#upiList .cardname, #nonupiList .cardname')].map(x=>x.textContent)).size,v=$('datePicker').value,t=iso(new Date());let l='today';if(v&&v!==t){const d=new Date(v+'T00:00:00');l=d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});}$('recCount').textContent=n+' for '+l;}
+const _rr2=renderRecommendations;renderRecommendations=function(){_rr2();updRecCount();};
+updRecCount();
+// Settings: share, intro, reset
+{const s=document.createElement('section');s.className='panel';s.innerHTML='<b>Share and data</b><div class="btnrow"><button type="button" id="shareBtn">Share CardWise</button><button type="button" class="secondary" id="copyBtn">Copy link</button></div><div class="btnrow"><button type="button" class="secondary smallbtn" id="introBtn">View intro</button><button type="button" class="danger smallbtn" id="resetBtn">Reset to sample data</button></div>';$('chkUpd').closest('.panel').before(s);
+$('shareBtn').onclick=shareApp;$('copyBtn').onclick=copyLink;$('introBtn').onclick=openIntro;$('resetBtn').onclick=resetSample;}
+function resetSample(){const ov=document.createElement('div');ov.className='fc-ov';ov.innerHTML='<div class="fc-box"><h3>Reset to sample data?</h3><p>This removes all cards, transactions and bills from this device and leaves one sample card. Download a backup first.</p><div id="rs-msg" style="font-size:12px;color:#0f6e56;min-height:16px"></div></div>';const box=ov.firstChild;function btn(t,c,f){const b=document.createElement('button');b.type='button';b.textContent=t;b.className=c;b.onclick=f;box.appendChild(b);}
+btn('Download backup now','',()=>{try{downloadBackup();ov.querySelector('#rs-msg').textContent='Backup downloaded.';}catch(e){ov.querySelector('#rs-msg').textContent='Backup failed.';}});
+btn('Reset now','fc-go',()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();});btn('Cancel','',()=>ov.remove());document.body.appendChild(ov);}
+// Onboarding
+const OB_KEY='cardwise-onboarded';
+function openIntro(){if($('intro'))return;const S=[
+{s:SVG_BEACH,t:'The right card, every day',p:'CardWise picks the best card for the day of the month by checking your statement cycle and payment type, so you get the longest interest-free period and use every card to the fullest. It also tracks reward points, expenses and bills paid, so you can relax like a guy on the beach.'},
+{s:SVG_CHART,t:'See the full picture',p:'Clear graphs with the numbers beside them: spend over the last six months, spend by category, how much of each card you have used and how you are doing against your monthly target.'},
+{s:SVG_LOCK,b:'100% ON YOUR PHONE',t:'Your data never leaves your phone',l:['Everything is stored only on this device. No account, no cloud.','Nothing is sent to any server.','PINs, CVVs and full card numbers are never asked for or saved.'],last:true}];
+const o=document.createElement('div');o.id='intro';
+o.innerHTML='<button type="button" class="obskip" id="obSkip">Skip</button><div class="obtrack" id="obTrack">'+S.map(x=>'<div class="obslide">'+x.s+(x.b?'<span class="obbadge">'+x.b+'</span>':'')+'<h2>'+x.t+'</h2>'+(x.p?'<p>'+x.p+'</p>':'')+(x.l?'<ul class="oblist">'+x.l.map(i=>'<li>'+i+'</li>').join('')+'</ul>':'')+'</div>').join('')+'</div><div class="obdots" id="obDots">'+S.map(()=>'<i></i>').join('')+'</div><div class="obnav"><button type="button" id="obNext">Next</button></div>';document.body.appendChild(o);
+const tr=$('obTrack'),dots=[...o.querySelectorAll('#obDots i')],nx=$('obNext');let idx=0;
+function paint(){idx=Math.max(0,Math.min(S.length-1,Math.round(tr.scrollLeft/(tr.clientWidth||1))));dots.forEach((d,i)=>d.classList.toggle('on',i===idx));nx.textContent=idx===S.length-1?'Get started':'Next';$('obSkip').style.visibility=idx===S.length-1?'hidden':'visible';}
+function done(){try{localStorage.setItem(OB_KEY,'1');}catch(e){}o.remove();}
+tr.addEventListener('scroll',paint);paint();
+nx.onclick=()=>{if(idx>=S.length-1){done();return;}tr.scrollTo({left:(idx+1)*tr.clientWidth,behavior:'smooth'});idx++;paint();};
+$('obSkip').onclick=done;
+const last=o.querySelectorAll('.obslide')[S.length-1],sb=document.createElement('button');sb.type='button';sb.className='secondary';sb.style.marginTop='14px';sb.textContent='Share CardWise';sb.onclick=shareApp;last.appendChild(sb);}
+{let seen=false;try{seen=!!localStorage.getItem(OB_KEY);}catch(e){}if(!seen)openIntro();}
 refresh();
 try{localStorage.removeItem(GATE_KEY);}catch(e){}
 updateReminderControl();

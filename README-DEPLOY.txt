@@ -134,3 +134,11 @@ CARDWISE v22 · THEMES
 - Header: wallet icon, CardWise and version on every tab; greeting shown on Home only.
 - Settings > Theme: Teal, Ocean, Indigo, Plum, Sunset, Graphite. Applies instantly, saved on the device and in backups.
 - icon.svg redrawn as a wallet (iPhone refreshes a home-screen icon only when the app is re-added).
+
+
+CARDWISE v23 · WELCOME
+- Hard-coded personal cards removed: a fresh install starts with one Sample Card. Settings > Reset to sample data (asks for a backup first).
+- Share CardWise / Copy link in Settings and on the last intro slide.
+- Onboarding: three swipeable slides on first open; Settings > View intro replays it.
+- Home: "Recommended cards" heading with a count for the chosen date.
+- Brand: CARD in white, WISE in a theme-matched accent colour.
