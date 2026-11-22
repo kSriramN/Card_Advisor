@@ -142,3 +142,16 @@ CARDWISE v23 · WELCOME
 - Onboarding: three swipeable slides on first open; Settings > View intro replays it.
 - Home: "Recommended cards" heading with a count for the chosen date.
 - Brand: CARD in white, WISE in a theme-matched accent colour.
+
+
+CARDWISE v24 · POLISH
+- Fixes: spend progress bars visible again; Cards tab truly stacked; sample card has a statement day.
+- Cards sorted by next statement date (toggle: by name); each strip shows its statement date and days left.
+- Activity: charts first; tap a card in Spend by card to filter Transaction history (follows the report period).
+- Polish: press feedback, smooth unpack, 44px touch targets, tabular numbers, reduced-motion support.
+
+
+CARDWISE v25 · BILLS (includes v24 · Polish)
+- Bills tab: monthly summary with one chip per card. Red dot = no bill recorded for this month yet, green dot = bill recorded. Tap a red chip to add that bill.
+- Cards sorted by next statement date with the date on each strip; tap a card in Spend by card to filter Transaction history.
+- Fixes: spend bars visible, Cards tab stacked, sample card has a statement day.

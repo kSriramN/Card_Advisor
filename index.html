@@ -269,6 +269,35 @@ html[data-theme=graphite]{--acc:#E6E3D6}
 .obnav{padding:0 24px;display:flex;gap:10px}.obnav button{flex:1;padding:14px;font-size:16px;border-radius:14px}
 .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#172538;color:#fff;border-radius:99px;padding:10px 18px;font-size:13px;font-weight:600;z-index:2200}
 .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* v24 Polish */
+.bar{background:#e3ebe8;border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+body{font-variant-numeric:tabular-nums}
+button,.nav-btn,.wallet-card,.tap{transition:transform .12s cubic-bezier(.2,.8,.2,1),background .12s,opacity .12s}
+button:active,.nav-btn:active,.wallet-card:active{transform:scale(.97)}
+.smallbtn{min-height:44px}
+#cardList.stack{display:block}
+#cardList.stack .item{height:84px}
+#cardList.stack .item:last-child{height:150px}
+#cardList.stack .item:not(.open) .wallet-stmt{position:absolute;top:60px;left:18px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85)}
+.wallet-stmt.soon{color:#ffd27a!important;font-weight:800}.wallet-stmt.unset{opacity:.7}
+#cardList.stack .item.open .wallet-stmt{display:none}
+#cardList.stack .item.open .item-body{animation:rise .24s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.count-pill.unset{background:#eef1f4!important;color:#6a7a8c!important}
+.chartrow.tap{cursor:pointer;border-radius:10px;padding:4px 6px;margin:0 -6px}.chartrow.tap:active{opacity:.7}.chartrow.sel{background:var(--thbg)}.chartrow.sel b{color:var(--th)}
+.histhead{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--thbg);border-radius:12px;padding:6px 6px 6px 12px;margin-bottom:8px;font-size:13px;font-weight:700}
+#view-cards,#view-activity,#view-bills{padding-bottom:96px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* v25 Bills */
+.billsum{padding:12px 14px}
+.bchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.bchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--thbg);color:var(--ink);border-radius:99px;padding:8px 13px;font-size:13px;font-weight:600;width:auto;margin:0;box-shadow:none}
+button.bchip{min-height:44px;cursor:pointer}
+.bdot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}.bdot.red{background:#d64545}.bdot.grn{background:#1e9e6a}
+.bcnt{font-size:12px;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap}.bcnt.warn{background:#fdf1d8;color:#8a5a0b}.bcnt.ok{background:#e2f5ec;color:#11704a}
 </style></head><body><main>
 <header class="app-header"><div class="hrow"><div class="brandmark"><div class="brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg></div><div><div class="brand"><span class="b1">CARD</span><span class="b2">WISE</span></div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></div><div class="greetrow" id="greetRow"><span id="greet"></span></div></header>
 <nav class="app-nav" aria-label="Main navigation">
@@ -431,7 +460,7 @@ window.FreshCache={init:init,openDialog:openDialog,check:check,clearAll:clearAll
 (()=>{"use strict";
 const KEY="cardwise-user-data-v2", GATE_KEY="cardwise-backup-required-v1";
 const seed=[
-{id:"c1",name:"Sample Card",bank:"Demo Bank",network:"Visa",cycle:15,statement:"",due:"",offers:"Sample offer: 5% off on dining",notes:"This is a sample. Edit or delete it and add your own cards.",upi:true,nonupi:true,from:1,to:31}
+{id:"c1",name:"Sample Card",bank:"Demo Bank",network:"Visa",cycle:15,statement:"15",due:"",offers:"Sample offer: 5% off on dining",notes:"This is a sample. Edit or delete it and add your own cards.",upi:true,nonupi:true,from:1,to:31}
 ];
 const $=id=>document.getElementById(id);
 
@@ -503,7 +532,7 @@ function cardHTML(c, referenceDate){
  return `<article class="cardrow" style="--accent:${accent};--tint:${tint}">
  <div class="mini-card"><span class="chip"></span><span class="mini-bank">${esc(c.bank||c.name||"CardWise")}</span></div>
  <div class="cardname">${esc(c.name)}</div>
- <div class="count-pill${urgency}">${esc(countdown)}</div>
+ <div class="count-pill${urgency}${days===null?" unset":""}">${esc(countdown)}</div>
  <div class="meta">Statement: ${esc(statementDate)}${c.due?` · Due day: ${esc(c.due)}`:""}</div>
  ${c.offers?`<div class="offer">${esc(c.offers)}</div>`:""}
  </article>`;
@@ -524,12 +553,13 @@ function renderRecommendations(){
  }
 }
 function renderCardsBase(){
- $("cardList").innerHTML=data.cards.length?data.cards.map(c=>{
+ $("cardList").innerHTML=data.cards.length?sortedCards().map(c=>{
   const [accent,tint]=cardPalette(c);
   return `<article class="item">
    <div class="wallet-card" style="background:linear-gradient(135deg,${accent},#172f55)">
     <div class="wallet-top"><span class="wallet-bank">${esc(c.bank||"CardWise")}</span><span class="wallet-chip"></span></div>
     <div class="wallet-name">${esc(c.name)}</div>
+    <div class="wallet-stmt ${stmtCls(c)}">${esc(stmtLine(c))}</div>
     <div class="wallet-network">${esc(c.network||"Card")}</div>
     <div class="wallet-limit">Credit limit · ${c.creditLimit?money(c.creditLimit):"Not set"}</div>
    </div>
@@ -637,11 +667,11 @@ function renderExpenses(){
   ["Purchases",money(purchases)],["Payments",money(payments)],["Refunds",money(refunds)],
   ["Outstanding",money(outstanding)],["Total credit limit",money(totalLimits)],["Overall utilisation",totalLimits?utilisation.toFixed(1)+"%":"Set limits"]
  ].map(([label,val])=>`<div class="stat"><span>${label}</span><strong>${val}</strong></div>`).join("");
- const spendByCard=data.cards.map(c=>({name:c.name,amount:tx.filter(t=>t.cardId===c.id&&t.type==="purchase").reduce((s,t)=>s+Number(t.amount),0)})).filter(x=>x.amount>0).sort((a,b)=>b.amount-a.amount);
+ const spendByCard=data.cards.map(c=>({id:c.id,name:c.name,amount:tx.filter(t=>t.cardId===c.id&&t.type==="purchase").reduce((s,t)=>s+Number(t.amount),0)})).filter(x=>x.amount>0).sort((a,b)=>b.amount-a.amount);
  const max=Math.max(1,...spendByCard.map(x=>x.amount));
- $("spendChart").innerHTML=spendByCard.length?spendByCard.map(x=>`<div class="chartrow"><b>${esc(x.name)}</b><div class="bartrack"><div class="barfill" style="width:${x.amount/max*100}%"></div></div><span style="text-align:right">${money(x.amount)}</span></div>`).join(""):'<div class="empty">No purchases recorded for this period.</div>';
+ $("spendChart").innerHTML=spendByCard.length?spendByCard.map(x=>`<div class="chartrow tap${x.id===histCard?" sel":""}" data-spendcard="${esc(x.id)}" role="button" tabindex="0"><b>${esc(x.name)}</b><div class="bartrack"><div class="barfill" style="width:${x.amount/max*100}%"></div></div><span style="text-align:right">${money(x.amount)}</span></div>`).join(""):'<div class="empty">No purchases recorded for this period.</div>';
  $("utilisationList").innerHTML=data.cards.length?data.cards.map(c=>{const b=cardBalance(c.id),lim=Number(c.creditLimit||0),pct=lim?Math.min(100,b.outstanding/lim*100):0;return `<div class="item"><div class="itemtop"><b>${esc(c.name)}</b><b>${money(b.outstanding)}</b></div><div class="muted">Limit: ${lim?money(lim):"Not entered"} · Available: ${lim?money(Math.max(0,lim-b.outstanding)):"—"} · Utilisation: ${lim?pct.toFixed(1)+"%":"—"}</div>${lim?`<div class="utiltrack"><div class="utilfill" style="width:${pct}%"></div></div>`:""}</div>`}).join(""):'<div class="empty">Add a card to start tracking.</div>';
- const history=(data.transactions||[]).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+ const history=tx.filter(t=>!histCard||t.cardId===histCard).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
  $("transactionList").innerHTML=history.length?history.map(t=>{const c=data.cards.find(x=>x.id===t.cardId);const label=t.type==="purchase"?"Purchase":t.type==="payment"?"Payment":"Refund";return `<div class="txn"><div><b>${esc(t.description||label)}</b><small>${esc(c?.name||"Card removed")} · ${esc(t.date)} · ${esc(t.category||"Other")} · ${label}</small></div><div style="text-align:right;white-space:nowrap"><b>${money(t.amount)}</b><br><button class="danger smallbtn" data-txdelete="${esc(t.id)}">Delete</button></div></div>`}).join(""):'<div class="empty">No transactions recorded yet.</div>';
  document.querySelectorAll("[data-txdelete]").forEach(b=>b.onclick=()=>{if(!confirm("Delete this transaction?"))return;const old=data.transactions;data.transactions=old.filter(t=>t.id!==b.dataset.txdelete);try{persist();refresh();lockForBackup("Transaction deleted. Download a fresh backup before continuing.");}catch(e){data.transactions=old;alert("Could not save this change.");}});
  refreshTxnCards();
@@ -762,7 +792,7 @@ $('parseBulk').onclick=()=>showBulkReview(parseBulk($('bulkText').value));$('cle
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$('backupInfo').textContent=data.updatedAt?'Last saved: '+new Date(data.updatedAt).toLocaleString():'Starter card list loaded. No edits saved yet.';}
 
 /* ===== v19 Declutter ===== */
-const APP_LABEL='v23 · Welcome';
+const APP_LABEL='v25 · Bills';
 $('verLabel').textContent=APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
 $('chkUpd').onclick=async()=>{const m=$('updMsg');m.textContent='Checking…';try{const t=await(await fetch('./index.html?'+Date.now(),{cache:'no-store'})).text();const r=t.match(/APP_LABEL='([^']+)'/);if(!r){m.textContent='Could not read server version.';return;}if(r[1]===APP_LABEL){m.textContent='You are on the latest: '+APP_LABEL;return;}m.textContent='Updating to '+r[1]+'…';for(const g of await navigator.serviceWorker.getRegistrations())await g.unregister();for(const k of await caches.keys())await caches.delete(k);location.reload();}catch(e){m.textContent='Offline or unreachable.';}};
 function fmt(n){return n>=1e5?(n/1e5).toFixed(1)+'L':n>=1e3?(n/1e3).toFixed(1)+'k':String(Math.round(n));}
@@ -898,6 +928,44 @@ nx.onclick=()=>{if(idx>=S.length-1){done();return;}tr.scrollTo({left:(idx+1)*tr.
 $('obSkip').onclick=done;
 const last=o.querySelectorAll('.obslide')[S.length-1],sb=document.createElement('button');sb.type='button';sb.className='secondary';sb.style.marginTop='14px';sb.textContent='Share CardWise';sb.onclick=shareApp;last.appendChild(sb);}
 {let seen=false;try{seen=!!localStorage.getItem(OB_KEY);}catch(e){}if(!seen)openIntro();}
+
+/* ===== v24 Polish ===== */
+var histCard=null;
+function sortMode(){try{return localStorage.getItem('cardwise-card-sort')||'date';}catch(e){return 'date';}}
+function sortedCards(){const a=data.cards.slice();if(sortMode()==='name')return a.sort((x,y)=>String(x.name).localeCompare(String(y.name)));const now=new Date();return a.sort((x,y)=>{const dx=daysUntilStatement(x,now),dy=daysUntilStatement(y,now);if(dx===null&&dy===null)return 0;if(dx===null)return 1;if(dy===null)return -1;return dx-dy;});}
+function stmtLine(c){const now=new Date(),d=daysUntilStatement(c,now);if(d===null)return 'Statement day not set';const t=nextStatementDate(c.statement,now);return 'Statement '+t.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' · '+(d===0?'today':'in '+d+' day'+(d===1?'':'s'));}
+function stmtCls(c){const d=daysUntilStatement(c,new Date());return d===null?'unset':d<=5?'soon':'';}
+{const s=document.createElement('div');s.className='seg';s.id='sortSeg';s.innerHTML='<button type="button" data-s="date">By statement date</button><button type="button" data-s="name">By name</button>';$('cardList').before(s);
+const paint=()=>s.querySelectorAll('button').forEach(b=>b.className=b.dataset.s===sortMode()?'on':'');paint();
+s.onclick=e=>{const b=e.target.closest('button');if(!b)return;try{localStorage.setItem('cardwise-card-sort',b.dataset.s);}catch(_){}paint();renderCards();};}
+renderCards();
+// Activity: charts first, tap a card to filter history
+$('spendChart').after($('expenseStats'));$('expenseStats').style.marginTop='12px';
+{const hd=document.createElement('div');hd.className='histhead';hd.id='histHead';hd.hidden=true;hd.innerHTML='<span id="histHeadTxt"></span><button type="button" class="secondary smallbtn" id="histClear">✕ Clear</button>';$('transactionList').before(hd);
+$('histClear').onclick=()=>{histCard=null;renderExpenses();};}
+function pickCard(r){const id=r.dataset.spendcard;histCard=histCard===id?null:id;renderExpenses();if(histCard){const d=$('histSum').parentNode;d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}}
+$('spendChart').addEventListener('click',e=>{const r=e.target.closest('[data-spendcard]');if(r)pickCard(r);});
+$('spendChart').addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const r=e.target.closest('[data-spendcard]');if(r){e.preventDefault();pickCard(r);}});
+const _re4=renderExpenses;renderExpenses=function(){if(histCard&&!data.cards.some(c=>c.id===histCard))histCard=null;_re4();
+const per=$('reportPeriod').value,k=monthKey(iso(new Date())),tx=(data.transactions||[]).filter(t=>per==='all'||monthKey(t.date)===k).filter(t=>!histCard||t.cardId===histCard);
+$('histSum').textContent='Transaction history ('+tx.length+')';$('histHead').hidden=!histCard;
+if(histCard){const c=data.cards.find(x=>x.id===histCard),sp=tx.filter(t=>t.type==='purchase').reduce((s,t)=>s+Number(t.amount),0);$('histHeadTxt').textContent=c.name+' · '+tx.length+' transaction'+(tx.length===1?'':'s')+' · '+money(sp)+' spent '+(per==='all'?'in total':'this month');}};
+renderExpenses();
+
+/* ===== v25 Bills ===== */
+{const sec=document.createElement('section');sec.className='panel billsum';sec.id='billSum';sec.innerHTML='<div class="itemtop"><b id="billSumTitle"></b><span class="bcnt" id="billSumCnt"></span></div><div class="bchips" id="billChips"></div>';$('view-bills').querySelector('.view-heading').after(sec);
+$('billChips').addEventListener('click',e=>{const b=e.target.closest('[data-billcard]');if(!b)return;$('billCard').value=b.dataset.billcard;$('billMonth').value=iso(new Date()).slice(0,7);openSheet('Add bill',$('billForm'));});}
+function renderBillSummary(){
+ const sec=$('billSum'),cards=sortedCards(),mk=iso(new Date()).slice(0,7);
+ sec.hidden=!cards.length;if(!cards.length)return;
+ const done=new Set((data.bills||[]).filter(b=>b.billMonth===mk).map(b=>b.cardId));
+ const pend=cards.filter(c=>!done.has(c.id)),gen=cards.filter(c=>done.has(c.id));
+ $('billSumTitle').textContent=new Date().toLocaleDateString('en-IN',{month:'long'})+' bills';
+ const cnt=$('billSumCnt');cnt.textContent=pend.length?gen.length+' of '+cards.length+' generated':(cards.length===1?'Generated':'All '+cards.length+' generated');cnt.className='bcnt '+(pend.length?'warn':'ok');
+ $('billChips').innerHTML=pend.map(c=>`<button type="button" class="bchip" data-billcard="${esc(c.id)}" aria-label="${esc(c.name)}: bill not generated. Add bill"><i class="bdot red"></i>${esc(c.name)}</button>`).concat(gen.map(c=>`<span class="bchip" aria-label="${esc(c.name)}: bill generated"><i class="bdot grn"></i>${esc(c.name)}</span>`)).join('');
+}
+const _rb=renderBills;renderBills=function(){_rb();renderBillSummary();};
+renderBillSummary();
 refresh();
 try{localStorage.removeItem(GATE_KEY);}catch(e){}
 updateReminderControl();
