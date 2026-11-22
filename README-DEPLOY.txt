@@ -155,3 +155,13 @@ CARDWISE v25 · BILLS (includes v24 · Polish)
 - Bills tab: monthly summary with one chip per card. Red dot = no bill recorded for this month yet, green dot = bill recorded. Tap a red chip to add that bill.
 - Cards sorted by next statement date with the date on each strip; tap a card in Spend by card to filter Transaction history.
 - Fixes: spend bars visible, Cards tab stacked, sample card has a statement day.
+
+
+CARDWISE v26 · PAID
+- Bills tab: summary now shows Total billed and Paid amount (all recorded bills) next to the counts.
+- Month rollover: the "<Month> bills" summary, Home spend and Activity report follow the calendar month; if the app stays open past midnight on the 1st it refreshes itself (checked every minute and when the app is brought back to the front).
+
+
+CARDWISE v27 · COMPACT
+- Bills tab summary is about half as tall: just a dot and the card name, no capsules.
+- Dot colours: red = bill not generated for this month, orange = generated but payment pending, green = generated and paid. Tap a red name to add that bill.

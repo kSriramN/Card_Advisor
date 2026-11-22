@@ -291,13 +291,16 @@ button:active,.nav-btn:active,.wallet-card:active{transform:scale(.97)}
 #view-cards,#view-activity,#view-bills{padding-bottom:96px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* v25 Bills */
-.billsum{padding:12px 14px}
-.bchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.bchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--thbg);color:var(--ink);border-radius:99px;padding:8px 13px;font-size:13px;font-weight:600;width:auto;margin:0;box-shadow:none}
-button.bchip{min-height:44px;cursor:pointer}
-.bdot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}.bdot.red{background:#d64545}.bdot.grn{background:#1e9e6a}
-.bcnt{font-size:12px;font-weight:700;border-radius:99px;padding:3px 10px;white-space:nowrap}.bcnt.warn{background:#fdf1d8;color:#8a5a0b}.bcnt.ok{background:#e2f5ec;color:#11704a}
+/* v25 Bills, compacted in v27 */
+.billsum{padding:6px 12px}
+.billsum .itemtop{margin:0;align-items:center}
+#billSumTitle{font-size:13.5px;line-height:1.2}
+.bchips{display:flex;flex-wrap:wrap;gap:0 14px;margin-top:2px}
+.bchip{position:relative;display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--ink);padding:2px 0;font-size:12.5px;font-weight:600;width:auto;margin:0;box-shadow:none;min-height:0;line-height:1.25;border-radius:6px}
+button.bchip{cursor:pointer}
+button.bchip::after{content:"";position:absolute;inset:-7px -6px}
+.bdot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}.bdot.red{background:#d64545}.bdot.org{background:#f0901d}.bdot.grn{background:#1e9e6a}
+.bcnt{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;line-height:1.4;white-space:nowrap}.bcnt.warn{background:#fdf1d8;color:#8a5a0b}.bcnt.ok{background:#e2f5ec;color:#11704a}
 </style></head><body><main>
 <header class="app-header"><div class="hrow"><div class="brandmark"><div class="brand-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8V5a1 1 0 0 0-1-1H6a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2V6"/><path d="M20 12v4h-4a2 2 0 0 1 0-4h4"/></svg></div><div><div class="brand"><span class="b1">CARD</span><span class="b2">WISE</span></div><div class="tagline" id="verLabel"></div></div></div><button class="secondary smallbtn" id="backupTop"><span aria-hidden="true">↓</span> Backup</button></div><div class="greetrow" id="greetRow"><span id="greet"></span></div></header>
 <nav class="app-nav" aria-label="Main navigation">
@@ -703,7 +706,7 @@ function renderBills(){
  const unpaid=bills.filter(b=>!b.paid),paid=bills.filter(b=>b.paid);
  const unpaidTotal=unpaid.reduce((s,b)=>s+Number(b.amount||0),0);
  $("billStats").innerHTML=[
-  ["Bills recorded",bills.length],["Paid",paid.length],["Pending",unpaid.length],["Pending amount",money(unpaidTotal)]
+  ["Bills recorded",bills.length],["Total billed",money(unpaidTotal+paid.reduce((s,b)=>s+Number(b.amount||0),0))],["Paid",paid.length],["Paid amount",money(paid.reduce((s,b)=>s+Number(b.amount||0),0))],["Pending",unpaid.length],["Pending amount",money(unpaidTotal)]
  ].map(([k,v])=>`<div class="stat"><span>${k}</span><strong>${typeof v==="number"&&k==="Pending amount"?money(v):v}</strong></div>`).join("");
  $("billList").innerHTML=bills.length?bills.map(b=>{
   const c=data.cards.find(x=>x.id===b.cardId),status=b.paid?'<span style="color:#176b45;font-weight:800">✓ PAID</span>':'<span style="color:#a36a13;font-weight:800">● PAYMENT PENDING</span>';
@@ -792,7 +795,7 @@ $('parseBulk').onclick=()=>showBulkReview(parseBulk($('bulkText').value));$('cle
 function refresh(){renderRecommendations();renderCards();renderExpenses();renderBills();$('backupInfo').textContent=data.updatedAt?'Last saved: '+new Date(data.updatedAt).toLocaleString():'Starter card list loaded. No edits saved yet.';}
 
 /* ===== v19 Declutter ===== */
-const APP_LABEL='v25 · Bills';
+const APP_LABEL='v27 · Compact';
 $('verLabel').textContent=APP_LABEL;$('aboutVer').textContent='CardWise '+APP_LABEL+' · 31 Oct 2026';
 $('chkUpd').onclick=async()=>{const m=$('updMsg');m.textContent='Checking…';try{const t=await(await fetch('./index.html?'+Date.now(),{cache:'no-store'})).text();const r=t.match(/APP_LABEL='([^']+)'/);if(!r){m.textContent='Could not read server version.';return;}if(r[1]===APP_LABEL){m.textContent='You are on the latest: '+APP_LABEL;return;}m.textContent='Updating to '+r[1]+'…';for(const g of await navigator.serviceWorker.getRegistrations())await g.unregister();for(const k of await caches.keys())await caches.delete(k);location.reload();}catch(e){m.textContent='Offline or unreachable.';}};
 function fmt(n){return n>=1e5?(n/1e5).toFixed(1)+'L':n>=1e3?(n/1e3).toFixed(1)+'k':String(Math.round(n));}
@@ -958,14 +961,22 @@ $('billChips').addEventListener('click',e=>{const b=e.target.closest('[data-bill
 function renderBillSummary(){
  const sec=$('billSum'),cards=sortedCards(),mk=iso(new Date()).slice(0,7);
  sec.hidden=!cards.length;if(!cards.length)return;
- const done=new Set((data.bills||[]).filter(b=>b.billMonth===mk).map(b=>b.cardId));
- const pend=cards.filter(c=>!done.has(c.id)),gen=cards.filter(c=>done.has(c.id));
+ const st=c=>{const bs=(data.bills||[]).filter(b=>b.cardId===c.id&&b.billMonth===mk);return !bs.length?'red':bs.some(b=>!b.paid)?'org':'grn';};
+ const rank={red:0,org:1,grn:2},list=cards.map(c=>({c,s:st(c)})).sort((x,y)=>rank[x.s]-rank[y.s]);
+ const notGen=list.filter(x=>x.s==='red').length,gen=cards.length-notGen;
  $('billSumTitle').textContent=new Date().toLocaleDateString('en-IN',{month:'long'})+' bills';
- const cnt=$('billSumCnt');cnt.textContent=pend.length?gen.length+' of '+cards.length+' generated':(cards.length===1?'Generated':'All '+cards.length+' generated');cnt.className='bcnt '+(pend.length?'warn':'ok');
- $('billChips').innerHTML=pend.map(c=>`<button type="button" class="bchip" data-billcard="${esc(c.id)}" aria-label="${esc(c.name)}: bill not generated. Add bill"><i class="bdot red"></i>${esc(c.name)}</button>`).concat(gen.map(c=>`<span class="bchip" aria-label="${esc(c.name)}: bill generated"><i class="bdot grn"></i>${esc(c.name)}</span>`)).join('');
+ const cnt=$('billSumCnt');cnt.textContent=notGen?gen+' of '+cards.length+' generated':(cards.length===1?'Generated':'All '+cards.length+' generated');cnt.className='bcnt '+(notGen?'warn':'ok');
+ const lab={red:'bill not generated',org:'bill generated, payment pending',grn:'bill generated and paid'};
+ $('billChips').innerHTML=list.map(x=>x.s==='red'?`<button type="button" class="bchip" data-billcard="${esc(x.c.id)}" aria-label="${esc(x.c.name)}: ${lab.red}. Add bill" title="${lab.red}"><i class="bdot red"></i>${esc(x.c.name)}</button>`:`<span class="bchip" aria-label="${esc(x.c.name)}: ${lab[x.s]}" title="${lab[x.s]}"><i class="bdot ${x.s}"></i>${esc(x.c.name)}</span>`).join('');
 }
 const _rb=renderBills;renderBills=function(){_rb();renderBillSummary();};
 renderBillSummary();
+
+/* ===== v26 Paid ===== */
+let lastMonthKey=iso(new Date()).slice(0,7);
+function rollCheck(){const k=iso(new Date()).slice(0,7);if(k!==lastMonthKey){lastMonthKey=k;refresh();}}
+setInterval(rollCheck,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)rollCheck();});
 refresh();
 try{localStorage.removeItem(GATE_KEY);}catch(e){}
 updateReminderControl();
